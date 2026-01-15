@@ -22,6 +22,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Copy and set permissions for startup script
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser
 RUN chown -R appuser:appuser /app
@@ -30,7 +34,7 @@ USER appuser
 # Expose port
 EXPOSE 8000
 
-# Run the application
+# Run the application using startup script
 # Railway sets PORT environment variable automatically
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+CMD ["/app/start.sh"]
 
