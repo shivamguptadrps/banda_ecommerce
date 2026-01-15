@@ -22,16 +22,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Copy and set permissions for startup script
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
-
-# Create non-root user
+# Create non-root user first
 RUN adduser --disabled-password --gecos '' appuser
+
+# Copy and set permissions for startup script (before switching user)
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh && chown appuser:appuser /app/start.sh
+
+# Change ownership of app directory
 RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
 USER appuser
 
-# Expose port
+# Expose port (Railway will use PORT env var, this is just documentation)
 EXPOSE 8000
 
 # Run the application using startup script
