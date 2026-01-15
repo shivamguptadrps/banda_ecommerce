@@ -1,0 +1,384 @@
+{
+  "categories": [
+    {
+      "name": "Electronics",
+      "slug": "electronics",
+      "description": "Electronics and gadgets",
+      "display_order": 7,
+      "parent_id": null,
+      "segments": [
+        {
+          "name": "General Information",
+          "description": "Common attributes for all electronics",
+          "icon": "info",
+          "display_order": 1,
+          "attributes": [
+            {
+              "name": "Brand",
+              "description": "Product brand name",
+              "attribute_type": "select",
+              "options": ["Apple", "Samsung", "OnePlus", "Xiaomi", "Realme", "Oppo", "Vivo", "Motorola", "Nokia", "Other"],
+              "is_required": true,
+              "is_inherited": true,
+              "is_filterable": true,
+              "is_searchable": true,
+              "display_order": 1
+            },
+            {
+              "name": "Warranty Period",
+              "description": "Manufacturer warranty period",
+              "attribute_type": "number",
+              "unit": "months",
+              "is_required": false,
+              "is_inherited": true,
+              "is_filterable": true,
+              "display_order": 2
+            },
+            {
+              "name": "Country of Origin",
+              "description": "Country where product is manufactured",
+              "attribute_type": "select",
+              "options": ["India", "China", "USA", "South Korea", "Japan", "Other"],
+              "is_required": false,
+              "is_inherited": true,
+              "is_filterable": true,
+              "display_order": 3
+            }
+          ]
+        }
+      ],
+      "children": [
+        {
+          "name": "Mobile Phones",
+          "slug": "mobile-phones",
+          "description": "Smartphones and mobile phones",
+          "display_order": 1,
+          "segments": [
+            {
+              "name": "Device Specifications",
+              "description": "Mobile phone specifications",
+              "icon": "smartphone",
+              "display_order": 1,
+              "attributes": [
+                {
+                  "name": "Model Number",
+                  "description": "Device model number",
+                  "attribute_type": "text",
+                  "is_required": true,
+                  "is_inherited": true,
+                  "is_filterable": false,
+                  "is_searchable": true,
+                  "display_order": 1
+                },
+                {
+                  "name": "Color",
+                  "description": "Device color",
+                  "attribute_type": "select",
+                  "options": ["Black", "White", "Blue", "Red", "Green", "Purple", "Gold", "Silver", "Other"],
+                  "is_required": true,
+                  "is_inherited": true,
+                  "is_filterable": true,
+                  "display_order": 2
+                },
+                {
+                  "name": "Network Type",
+                  "description": "Network connectivity",
+                  "attribute_type": "multi_select",
+                  "options": ["4G", "5G", "WiFi", "Bluetooth"],
+                  "is_required": true,
+                  "is_inherited": true,
+                  "is_filterable": true,
+                  "display_order": 3
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "name": "Smartphones",
+              "slug": "smartphones",
+              "description": "Android, iOS smartphones",
+              "display_order": 1,
+              "segments": [
+                {
+                  "name": "Performance",
+                  "description": "Performance specifications",
+                  "icon": "cpu",
+                  "display_order": 1,
+                  "attributes": [
+                    {
+                      "name": "RAM",
+                      "description": "Random Access Memory",
+                      "attribute_type": "select",
+                      "options": ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"],
+                      "unit": "GB",
+                      "is_required": true,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 1
+                    },
+                    {
+                      "name": "Storage",
+                      "description": "Internal storage capacity",
+                      "attribute_type": "select",
+                      "options": ["32GB", "64GB", "128GB", "256GB", "512GB", "1TB"],
+                      "unit": "GB",
+                      "is_required": true,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 2
+                    },
+                    {
+                      "name": "Processor",
+                      "description": "Processor chipset",
+                      "attribute_type": "text",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": false,
+                      "display_order": 3
+                    }
+                  ]
+                },
+                {
+                  "name": "Display",
+                  "description": "Display features",
+                  "icon": "monitor",
+                  "display_order": 2,
+                  "attributes": [
+                    {
+                      "name": "Screen Size",
+                      "description": "Display screen size",
+                      "attribute_type": "number",
+                      "unit": "inches",
+                      "is_required": true,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 1
+                    },
+                    {
+                      "name": "Resolution",
+                      "description": "Screen resolution",
+                      "attribute_type": "select",
+                      "options": ["HD", "Full HD", "HD+", "Full HD+", "Quad HD", "4K"],
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 2
+                    },
+                    {
+                      "name": "Refresh Rate",
+                      "description": "Screen refresh rate",
+                      "attribute_type": "select",
+                      "options": ["60Hz", "90Hz", "120Hz", "144Hz"],
+                      "unit": "Hz",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 3
+                    }
+                  ]
+                },
+                {
+                  "name": "Camera",
+                  "description": "Camera specifications",
+                  "icon": "camera",
+                  "display_order": 3,
+                  "attributes": [
+                    {
+                      "name": "Rear Camera",
+                      "description": "Rear camera megapixels",
+                      "attribute_type": "number",
+                      "unit": "MP",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 1
+                    },
+                    {
+                      "name": "Front Camera",
+                      "description": "Front camera megapixels",
+                      "attribute_type": "number",
+                      "unit": "MP",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 2
+                    },
+                    {
+                      "name": "Video Recording",
+                      "description": "Video recording capability",
+                      "attribute_type": "select",
+                      "options": ["1080p", "4K", "8K"],
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 3
+                    }
+                  ]
+                },
+                {
+                  "name": "Battery & Charging",
+                  "description": "Battery specifications",
+                  "icon": "battery",
+                  "display_order": 4,
+                  "attributes": [
+                    {
+                      "name": "Battery Capacity",
+                      "description": "Battery capacity",
+                      "attribute_type": "number",
+                      "unit": "mAh",
+                      "is_required": true,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 1
+                    },
+                    {
+                      "name": "Fast Charging",
+                      "description": "Fast charging support",
+                      "attribute_type": "boolean",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 2
+                    },
+                    {
+                      "name": "Wireless Charging",
+                      "description": "Wireless charging support",
+                      "attribute_type": "boolean",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fresh Fruits & Vegetables",
+      "slug": "fresh-fruits-vegetables",
+      "description": "Fresh seasonal fruits and vegetables",
+      "display_order": 1,
+      "parent_id": null,
+      "segments": [
+        {
+          "name": "General Information",
+          "description": "Common attributes for fresh produce",
+          "icon": "leaf",
+          "display_order": 1,
+          "attributes": [
+            {
+              "name": "Origin",
+              "description": "Place of origin",
+              "attribute_type": "select",
+              "options": ["Local", "Imported", "Organic Farm", "Other"],
+              "is_required": false,
+              "is_inherited": true,
+              "is_filterable": true,
+              "display_order": 1
+            },
+            {
+              "name": "Organic",
+              "description": "Is this organic produce?",
+              "attribute_type": "boolean",
+              "is_required": false,
+              "is_inherited": true,
+              "is_filterable": true,
+              "display_order": 2
+            }
+          ]
+        }
+      ],
+      "children": [
+        {
+          "name": "Fresh Fruits",
+          "slug": "fresh-fruits",
+          "description": "Seasonal and exotic fruits",
+          "display_order": 1,
+          "segments": [
+            {
+              "name": "Fruit Details",
+              "description": "Fruit-specific attributes",
+              "icon": "apple",
+              "display_order": 1,
+              "attributes": [
+                {
+                  "name": "Variety",
+                  "description": "Fruit variety",
+                  "attribute_type": "text",
+                  "is_required": false,
+                  "is_inherited": true,
+                  "is_filterable": true,
+                  "display_order": 1
+                },
+                {
+                  "name": "Ripeness",
+                  "description": "Fruit ripeness level",
+                  "attribute_type": "select",
+                  "options": ["Unripe", "Semi-Ripe", "Ripe", "Overripe"],
+                  "is_required": false,
+                  "is_inherited": true,
+                  "is_filterable": true,
+                  "display_order": 2
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "name": "Bananas & Plantains",
+              "slug": "bananas-plantains",
+              "description": "Fresh bananas and plantains",
+              "display_order": 1,
+              "segments": [
+                {
+                  "name": "Banana Specifications",
+                  "description": "Specific attributes for bananas",
+                  "icon": "banana",
+                  "display_order": 1,
+                  "attributes": [
+                    {
+                      "name": "Banana Type",
+                      "description": "Type of banana",
+                      "attribute_type": "select",
+                      "options": ["Regular", "Robusta", "Red Banana", "Yelakki", "Nendran", "Other"],
+                      "is_required": true,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 1
+                    },
+                    {
+                      "name": "Quantity",
+                      "description": "Number of bananas",
+                      "attribute_type": "number",
+                      "unit": "pieces",
+                      "is_required": true,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 2
+                    },
+                    {
+                      "name": "Weight",
+                      "description": "Approximate weight",
+                      "attribute_type": "number",
+                      "unit": "kg",
+                      "is_required": false,
+                      "is_inherited": false,
+                      "is_filterable": true,
+                      "display_order": 3
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

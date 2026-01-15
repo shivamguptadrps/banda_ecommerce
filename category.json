@@ -1,0 +1,1739 @@
+{
+    "categories": [
+      {
+        "name": "Fresh Fruits & Vegetables",
+        "slug": "fresh-fruits-vegetables",
+        "description": "Fresh seasonal fruits and vegetables",
+        "display_order": 1,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Fresh Fruits",
+            "slug": "fresh-fruits",
+            "description": "Seasonal and exotic fruits",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Bananas & Plantains",
+                "slug": "bananas-plantains",
+                "description": "Fresh bananas and plantains",
+                "display_order": 1
+              },
+              {
+                "name": "Citrus Fruits",
+                "slug": "citrus-fruits",
+                "description": "Oranges, lemons, sweet lime",
+                "display_order": 2
+              },
+              {
+                "name": "Mangoes & Seasonal",
+                "slug": "mangoes-seasonal",
+                "description": "Mangoes and seasonal fruits",
+                "display_order": 3
+              },
+              {
+                "name": "Apples & Pears",
+                "slug": "apples-pears",
+                "description": "Fresh apples and pears",
+                "display_order": 4
+              },
+              {
+                "name": "Grapes & Berries",
+                "slug": "grapes-berries",
+                "description": "Fresh grapes and berries",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Fresh Vegetables",
+            "slug": "fresh-vegetables",
+            "description": "Fresh seasonal vegetables",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Leafy Vegetables",
+                "slug": "leafy-vegetables",
+                "description": "Spinach, coriander, mint, fenugreek",
+                "display_order": 1
+              },
+              {
+                "name": "Root Vegetables",
+                "slug": "root-vegetables",
+                "description": "Potato, onion, carrot, radish",
+                "display_order": 2
+              },
+              {
+                "name": "Tomatoes & Peppers",
+                "slug": "tomatoes-peppers",
+                "description": "Fresh tomatoes and peppers",
+                "display_order": 3
+              },
+              {
+                "name": "Gourds & Cucumbers",
+                "slug": "gourds-cucumbers",
+                "description": "Bottle gourd, ridge gourd, cucumber",
+                "display_order": 4
+              },
+              {
+                "name": "Cauliflower & Cabbage",
+                "slug": "cauliflower-cabbage",
+                "description": "Fresh cauliflower and cabbage",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Herbs & Spices Fresh",
+            "slug": "herbs-spices-fresh",
+            "description": "Fresh herbs and spices",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Coriander & Mint",
+                "slug": "coriander-mint",
+                "description": "Fresh coriander and mint leaves",
+                "display_order": 1
+              },
+              {
+                "name": "Curry Leaves & Basil",
+                "slug": "curry-leaves-basil",
+                "description": "Fresh curry leaves and basil",
+                "display_order": 2
+              },
+              {
+                "name": "Ginger & Garlic",
+                "slug": "ginger-garlic",
+                "description": "Fresh ginger and garlic",
+                "display_order": 3
+              },
+              {
+                "name": "Green Chilies",
+                "slug": "green-chilies",
+                "description": "Fresh green chilies",
+                "display_order": 4
+              },
+              {
+                "name": "Turmeric & Other Roots",
+                "slug": "turmeric-other-roots",
+                "description": "Fresh turmeric and other roots",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Organic & Exotic",
+            "slug": "organic-exotic",
+            "description": "Organic and exotic produce",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Organic Vegetables",
+                "slug": "organic-vegetables",
+                "description": "Certified organic vegetables",
+                "display_order": 1
+              },
+              {
+                "name": "Organic Fruits",
+                "slug": "organic-fruits",
+                "description": "Certified organic fruits",
+                "display_order": 2
+              },
+              {
+                "name": "Exotic Fruits",
+                "slug": "exotic-fruits",
+                "description": "Kiwi, dragon fruit, avocados",
+                "display_order": 3
+              },
+              {
+                "name": "Exotic Vegetables",
+                "slug": "exotic-vegetables",
+                "description": "Broccoli, zucchini, bell peppers",
+                "display_order": 4
+              },
+              {
+                "name": "Baby Vegetables",
+                "slug": "baby-vegetables",
+                "description": "Baby corn, baby carrots",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Pre-Cut & Ready to Cook",
+            "slug": "pre-cut-ready-cook",
+            "description": "Pre-cut vegetables and ready mixes",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "Pre-Cut Vegetables",
+                "slug": "pre-cut-vegetables",
+                "description": "Ready to cook cut vegetables",
+                "display_order": 1
+              },
+              {
+                "name": "Salad Mixes",
+                "slug": "salad-mixes",
+                "description": "Ready to eat salad mixes",
+                "display_order": 2
+              },
+              {
+                "name": "Stir Fry Mixes",
+                "slug": "stir-fry-mixes",
+                "description": "Ready to cook stir fry mixes",
+                "display_order": 3
+              },
+              {
+                "name": "Soup Mixes",
+                "slug": "soup-mixes",
+                "description": "Ready to cook soup vegetable mixes",
+                "display_order": 4
+              },
+              {
+                "name": "Fruit Salads",
+                "slug": "fruit-salads",
+                "description": "Fresh cut fruit salads",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Grocery & Kitchen",
+        "slug": "grocery-kitchen",
+        "description": "Daily grocery and kitchen essentials",
+        "display_order": 2,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Atta, Rice & Dals",
+            "slug": "atta-rice-dals",
+            "description": "Grains, pulses and lentils",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Wheat Flour & Atta",
+                "slug": "wheat-flour-atta",
+                "description": "Wheat flour, multigrain atta",
+                "display_order": 1
+              },
+              {
+                "name": "Rice & Basmati",
+                "slug": "rice-basmati",
+                "description": "Basmati rice, sona masoori, brown rice",
+                "display_order": 2
+              },
+              {
+                "name": "Dals & Pulses",
+                "slug": "dals-pulses",
+                "description": "Toor dal, moong dal, chana dal",
+                "display_order": 3
+              },
+              {
+                "name": "Whole Grains",
+                "slug": "whole-grains",
+                "description": "Wheat, barley, jowar, bajra",
+                "display_order": 4
+              },
+              {
+                "name": "Rice Varieties",
+                "slug": "rice-varieties",
+                "description": "Poha, vermicelli, pasta",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Cooking Oils & Ghee",
+            "slug": "cooking-oils-ghee",
+            "description": "Edible oils and ghee",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Refined Oils",
+                "slug": "refined-oils",
+                "description": "Sunflower, soybean, refined oil",
+                "display_order": 1
+              },
+              {
+                "name": "Mustard & Groundnut Oil",
+                "slug": "mustard-groundnut-oil",
+                "description": "Mustard oil, groundnut oil",
+                "display_order": 2
+              },
+              {
+                "name": "Coconut & Olive Oil",
+                "slug": "coconut-olive-oil",
+                "description": "Coconut oil, olive oil",
+                "display_order": 3
+              },
+              {
+                "name": "Desi Ghee",
+                "slug": "desi-ghee",
+                "description": "Pure desi ghee, cow ghee",
+                "display_order": 4
+              },
+              {
+                "name": "Butter & Margarine",
+                "slug": "butter-margarine",
+                "description": "Butter, margarine, cooking butter",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Masala & Spices",
+            "slug": "masala-spices",
+            "description": "Spices, masalas and seasonings",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Whole Spices",
+                "slug": "whole-spices",
+                "description": "Cumin, coriander, cardamom, cloves",
+                "display_order": 1
+              },
+              {
+                "name": "Powdered Spices",
+                "slug": "powdered-spices",
+                "description": "Turmeric, red chili, coriander powder",
+                "display_order": 2
+              },
+              {
+                "name": "Garam Masala & Blends",
+                "slug": "garam-masala-blends",
+                "description": "Garam masala, curry masala, biryani masala",
+                "display_order": 3
+              },
+              {
+                "name": "Salt & Sugar",
+                "slug": "salt-sugar",
+                "description": "Table salt, rock salt, sugar, jaggery",
+                "display_order": 4
+              },
+              {
+                "name": "Pickle Masala & Mixes",
+                "slug": "pickle-masala-mixes",
+                "description": "Pickle masala, chaat masala, pav bhaji masala",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Dry Fruits & Nuts",
+            "slug": "dry-fruits-nuts",
+            "description": "Dry fruits, nuts and seeds",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Almonds & Cashews",
+                "slug": "almonds-cashews",
+                "description": "Almonds, cashews, pistachios",
+                "display_order": 1
+              },
+              {
+                "name": "Raisins & Dates",
+                "slug": "raisins-dates",
+                "description": "Raisins, dates, figs",
+                "display_order": 2
+              },
+              {
+                "name": "Seeds & Nuts",
+                "slug": "seeds-nuts",
+                "description": "Sunflower seeds, pumpkin seeds, walnuts",
+                "display_order": 3
+              },
+              {
+                "name": "Dry Fruit Mixes",
+                "slug": "dry-fruit-mixes",
+                "description": "Trail mixes, dry fruit blends",
+                "display_order": 4
+              },
+              {
+                "name": "Roasted & Salted",
+                "slug": "roasted-salted",
+                "description": "Roasted nuts, salted peanuts",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Sugar, Jaggery & Sweeteners",
+            "slug": "sugar-jaggery-sweeteners",
+            "description": "Sweeteners and sugar products",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "White Sugar",
+                "slug": "white-sugar",
+                "description": "Crystal sugar, powdered sugar",
+                "display_order": 1
+              },
+              {
+                "name": "Brown Sugar & Jaggery",
+                "slug": "brown-sugar-jaggery",
+                "description": "Brown sugar, jaggery, gur",
+                "display_order": 2
+              },
+              {
+                "name": "Honey & Syrups",
+                "slug": "honey-syrups",
+                "description": "Pure honey, maple syrup",
+                "display_order": 3
+              },
+              {
+                "name": "Artificial Sweeteners",
+                "slug": "artificial-sweeteners",
+                "description": "Stevia, sugar-free sweeteners",
+                "display_order": 4
+              },
+              {
+                "name": "Rock Sugar & Mishri",
+                "slug": "rock-sugar-mishri",
+                "description": "Rock sugar, mishri, candy sugar",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dairy & Eggs",
+        "slug": "dairy-eggs",
+        "description": "Fresh dairy products and eggs",
+        "display_order": 3,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Milk & Milk Products",
+            "slug": "milk-milk-products",
+            "description": "Fresh milk and milk products",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Fresh Milk",
+                "slug": "fresh-milk",
+                "description": "Full cream, toned, double toned milk",
+                "display_order": 1
+              },
+              {
+                "name": "Curd & Yogurt",
+                "slug": "curd-yogurt",
+                "description": "Fresh curd, yogurt, Greek yogurt",
+                "display_order": 2
+              },
+              {
+                "name": "Paneer & Cheese",
+                "slug": "paneer-cheese",
+                "description": "Fresh paneer, processed cheese, mozzarella",
+                "display_order": 3
+              },
+              {
+                "name": "Butter & Cream",
+                "slug": "butter-cream",
+                "description": "Butter, fresh cream, whipping cream",
+                "display_order": 4
+              },
+              {
+                "name": "Buttermilk & Lassi",
+                "slug": "buttermilk-lassi",
+                "description": "Buttermilk, sweet lassi, salted lassi",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Eggs & Poultry",
+            "slug": "eggs-poultry",
+            "description": "Fresh eggs and poultry products",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Farm Fresh Eggs",
+                "slug": "farm-fresh-eggs",
+                "description": "Farm fresh eggs, country eggs",
+                "display_order": 1
+              },
+              {
+                "name": "Organic Eggs",
+                "slug": "organic-eggs",
+                "description": "Organic, free-range eggs",
+                "display_order": 2
+              },
+              {
+                "name": "Duck & Quail Eggs",
+                "slug": "duck-quail-eggs",
+                "description": "Duck eggs, quail eggs",
+                "display_order": 3
+              },
+              {
+                "name": "Chicken & Meat",
+                "slug": "chicken-meat",
+                "description": "Fresh chicken, mutton, goat meat",
+                "display_order": 4
+              },
+              {
+                "name": "Processed Meat",
+                "slug": "processed-meat",
+                "description": "Sausages, salami, ham",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Frozen Foods",
+            "slug": "frozen-foods",
+            "description": "Frozen vegetables and ready foods",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Frozen Vegetables",
+                "slug": "frozen-vegetables",
+                "description": "Frozen peas, corn, mixed vegetables",
+                "display_order": 1
+              },
+              {
+                "name": "Frozen Snacks",
+                "slug": "frozen-snacks",
+                "description": "Frozen samosas, spring rolls, nuggets",
+                "display_order": 2
+              },
+              {
+                "name": "Ice Cream & Desserts",
+                "slug": "ice-cream-desserts",
+                "description": "Ice cream, frozen desserts",
+                "display_order": 3
+              },
+              {
+                "name": "Frozen Parathas & Rotis",
+                "slug": "frozen-parathas-rotis",
+                "description": "Frozen parathas, rotis, naan",
+                "display_order": 4
+              },
+              {
+                "name": "Frozen Fruits",
+                "slug": "frozen-fruits",
+                "description": "Frozen berries, mango pulp",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Beverages",
+            "slug": "beverages",
+            "description": "Drinks and beverages",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Tea & Coffee",
+                "slug": "tea-coffee",
+                "description": "Tea leaves, coffee powder, instant coffee",
+                "display_order": 1
+              },
+              {
+                "name": "Soft Drinks",
+                "slug": "soft-drinks",
+                "description": "Cold drinks, aerated drinks",
+                "display_order": 2
+              },
+              {
+                "name": "Juices & Drinks",
+                "slug": "juices-drinks",
+                "description": "Fruit juices, packaged drinks",
+                "display_order": 3
+              },
+              {
+                "name": "Energy & Sports Drinks",
+                "slug": "energy-sports-drinks",
+                "description": "Energy drinks, sports drinks",
+                "display_order": 4
+              },
+              {
+                "name": "Health Drinks",
+                "slug": "health-drinks",
+                "description": "Horlicks, Complan, health drinks",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Bakery & Bread",
+            "slug": "bakery-bread",
+            "description": "Fresh bread and bakery items",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "Bread & Buns",
+                "slug": "bread-buns",
+                "description": "White bread, brown bread, buns",
+                "display_order": 1
+              },
+              {
+                "name": "Biscuits & Cookies",
+                "slug": "biscuits-cookies",
+                "description": "Sweet biscuits, cookies, cream biscuits",
+                "display_order": 2
+              },
+              {
+                "name": "Cakes & Pastries",
+                "slug": "cakes-pastries",
+                "description": "Cakes, pastries, muffins",
+                "display_order": 3
+              },
+              {
+                "name": "Rusks & Toasts",
+                "slug": "rusks-toasts",
+                "description": "Rusks, toast, breadsticks",
+                "display_order": 4
+              },
+              {
+                "name": "Namkeen & Savories",
+                "slug": "namkeen-savories",
+                "description": "Mathri, namkeen, farsan",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Snacks & Munchies",
+        "slug": "snacks-munchies",
+        "description": "Snacks, chips and munchies",
+        "display_order": 4,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Chips & Crisps",
+            "slug": "chips-crisps",
+            "description": "Potato chips, kurkure, namkeen",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Potato Chips",
+                "slug": "potato-chips",
+                "description": "Lays, Kurkure, Haldiram chips",
+                "display_order": 1
+              },
+              {
+                "name": "Corn Chips",
+                "slug": "corn-chips",
+                "description": "Nachos, corn chips, tortilla chips",
+                "display_order": 2
+              },
+              {
+                "name": "Namkeen & Mixtures",
+                "slug": "namkeen-mixtures",
+                "description": "Bhujia, sev, mixture, chana jor garam",
+                "display_order": 3
+              },
+              {
+                "name": "Kurkure & Puffs",
+                "slug": "kurkure-puffs",
+                "description": "Kurkure, cheetos, puffs",
+                "display_order": 4
+              },
+              {
+                "name": "Regional Snacks",
+                "slug": "regional-snacks",
+                "description": "Local UP snacks, mathri, papad",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Sweets & Chocolates",
+            "slug": "sweets-chocolates",
+            "description": "Sweets, chocolates and candies",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Chocolates",
+                "slug": "chocolates",
+                "description": "Cadbury, Amul, imported chocolates",
+                "display_order": 1
+              },
+              {
+                "name": "Indian Sweets",
+                "slug": "indian-sweets",
+                "description": "Gulab jamun, rasgulla, barfi",
+                "display_order": 2
+              },
+              {
+                "name": "Candies & Toffees",
+                "slug": "candies-toffees",
+                "description": "Hard candies, toffees, mints",
+                "display_order": 3
+              },
+              {
+                "name": "Chocolate Bars",
+                "slug": "chocolate-bars",
+                "description": "Chocolate bars, wafers",
+                "display_order": 4
+              },
+              {
+                "name": "Gums & Jellies",
+                "slug": "gums-jellies",
+                "description": "Chewing gum, jelly candies",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Nuts & Dry Fruits",
+            "slug": "nuts-dry-fruits",
+            "description": "Roasted nuts and dry fruits",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Roasted Nuts",
+                "slug": "roasted-nuts",
+                "description": "Roasted peanuts, almonds, cashews",
+                "display_order": 1
+              },
+              {
+                "name": "Salted Nuts",
+                "slug": "salted-nuts",
+                "description": "Salted peanuts, salted cashews",
+                "display_order": 2
+              },
+              {
+                "name": "Trail Mixes",
+                "slug": "trail-mixes",
+                "description": "Mixed nuts, trail mixes",
+                "display_order": 3
+              },
+              {
+                "name": "Dry Fruit Snacks",
+                "slug": "dry-fruit-snacks",
+                "description": "Dry fruit bars, energy bars",
+                "display_order": 4
+              },
+              {
+                "name": "Roasted Seeds",
+                "slug": "roasted-seeds",
+                "description": "Roasted sunflower, pumpkin seeds",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Ready to Eat",
+            "slug": "ready-eat",
+            "description": "Ready to eat meals and snacks",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Instant Noodles",
+                "slug": "instant-noodles",
+                "description": "Maggi, Top Ramen, instant noodles",
+                "display_order": 1
+              },
+              {
+                "name": "Ready Meals",
+                "slug": "ready-meals",
+                "description": "Ready to eat dal, curry, biryani",
+                "display_order": 2
+              },
+              {
+                "name": "Poha & Upma Mix",
+                "slug": "poha-upma-mix",
+                "description": "Ready mix poha, upma, idli mix",
+                "display_order": 3
+              },
+              {
+                "name": "Soups & Instant Foods",
+                "slug": "soups-instant-foods",
+                "description": "Instant soups, instant foods",
+                "display_order": 4
+              },
+              {
+                "name": "Khakhra & Farsan",
+                "slug": "khakhra-farsan",
+                "description": "Khakhra, farsan, ready snacks",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Pickles & Chutneys",
+            "slug": "pickles-chutneys",
+                "description": "Pickles, chutneys and sauces",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "Mango Pickles",
+                "slug": "mango-pickles",
+                "description": "Aam ka achar, sweet mango pickle",
+                "display_order": 1
+              },
+              {
+                "name": "Mixed Pickles",
+                "slug": "mixed-pickles",
+                "description": "Mixed vegetable pickle, lemon pickle",
+                "display_order": 2
+              },
+              {
+                "name": "Chutneys & Sauces",
+                "slug": "chutneys-sauces",
+                "description": "Tomato ketchup, green chutney, tamarind chutney",
+                "display_order": 3
+              },
+              {
+                "name": "Papad & Fryums",
+                "slug": "papad-fryums",
+                "description": "Papad, fryums, vadi",
+                "display_order": 4
+              },
+              {
+                "name": "Regional Pickles",
+                "slug": "regional-pickles",
+                "description": "UP special pickles, local varieties",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Personal Care",
+        "slug": "personal-care",
+        "description": "Personal care and hygiene products",
+        "display_order": 5,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Hair Care",
+            "slug": "hair-care",
+            "description": "Shampoo, conditioner, hair oils",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Shampoo",
+                "slug": "shampoo",
+                "description": "Anti-dandruff, herbal, regular shampoo",
+                "display_order": 1
+              },
+              {
+                "name": "Conditioner & Hair Masks",
+                "slug": "conditioner-hair-masks",
+                "description": "Hair conditioner, hair masks, serums",
+                "display_order": 2
+              },
+              {
+                "name": "Hair Oils",
+                "slug": "hair-oils",
+                "description": "Coconut oil, amla oil, hair growth oils",
+                "display_order": 3
+              },
+              {
+                "name": "Hair Styling",
+                "slug": "hair-styling",
+                "description": "Hair gel, hair spray, wax",
+                "display_order": 4
+              },
+              {
+                "name": "Hair Accessories",
+                "slug": "hair-accessories",
+                "description": "Hair bands, clips, combs",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Skin Care",
+            "slug": "skin-care",
+            "description": "Face wash, creams, lotions",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Face Wash & Cleansers",
+                "slug": "face-wash-cleansers",
+                "description": "Face wash, face cleansers, scrubs",
+                "display_order": 1
+              },
+              {
+                "name": "Moisturizers & Creams",
+                "slug": "moisturizers-creams",
+                "description": "Face cream, body lotion, moisturizers",
+                "display_order": 2
+              },
+              {
+                "name": "Sunscreen & Protection",
+                "slug": "sunscreen-protection",
+                "description": "Sunscreen, sunblock, tan removal",
+                "display_order": 3
+              },
+              {
+                "name": "Face Packs & Masks",
+                "slug": "face-packs-masks",
+                "description": "Face packs, sheet masks, scrubs",
+                "display_order": 4
+              },
+              {
+                "name": "Anti-Ageing & Serums",
+                "slug": "anti-ageing-serums",
+                "description": "Anti-ageing creams, serums, toners",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Oral Care",
+            "slug": "oral-care",
+            "description": "Toothpaste, brushes, mouthwash",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Toothpaste",
+                "slug": "toothpaste",
+                "description": "Colgate, Pepsodent, Sensodyne",
+                "display_order": 1
+              },
+              {
+                "name": "Toothbrushes",
+                "slug": "toothbrushes",
+                "description": "Manual, electric toothbrushes",
+                "display_order": 2
+              },
+              {
+                "name": "Mouthwash & Rinses",
+                "slug": "mouthwash-rinses",
+                "description": "Mouthwash, oral rinses",
+                "display_order": 3
+              },
+              {
+                "name": "Dental Floss & Picks",
+                "slug": "dental-floss-picks",
+                "description": "Dental floss, interdental brushes",
+                "display_order": 4
+              },
+              {
+                "name": "Teeth Whitening",
+                "slug": "teeth-whitening",
+                "description": "Teeth whitening strips, gels",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Bath & Body",
+            "slug": "bath-body",
+            "description": "Soaps, body wash, deodorants",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Soaps & Body Wash",
+                "slug": "soaps-body-wash",
+                "description": "Bathing soap, body wash, shower gel",
+                "display_order": 1
+              },
+              {
+                "name": "Deodorants & Perfumes",
+                "slug": "deodorants-perfumes",
+                "description": "Deodorants, perfumes, body sprays",
+                "display_order": 2
+              },
+              {
+                "name": "Body Lotions & Creams",
+                "slug": "body-lotions-creams",
+                "description": "Body lotion, body butter, creams",
+                "display_order": 3
+              },
+              {
+                "name": "Hand & Foot Care",
+                "slug": "hand-foot-care",
+                "description": "Hand wash, foot cream, hand sanitizer",
+                "display_order": 4
+              },
+              {
+                "name": "Bath Accessories",
+                "slug": "bath-accessories",
+                "description": "Loofah, bath sponges, towels",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Men's Grooming",
+            "slug": "mens-grooming",
+            "description": "Shaving, grooming products for men",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "Shaving Products",
+                "slug": "shaving-products",
+                "description": "Razors, shaving cream, aftershave",
+                "display_order": 1
+              },
+              {
+                "name": "Beard Care",
+                "slug": "beard-care",
+                "description": "Beard oil, beard wax, trimmers",
+                "display_order": 2
+              },
+              {
+                "name": "Men's Skincare",
+                "slug": "mens-skincare",
+                "description": "Face wash for men, moisturizers",
+                "display_order": 3
+              },
+              {
+                "name": "Hair Removal",
+                "slug": "hair-removal",
+                "description": "Wax strips, hair removal creams",
+                "display_order": 4
+              },
+              {
+                "name": "Men's Deodorants",
+                "slug": "mens-deodorants",
+                "description": "Men's deodorants, perfumes",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Baby Care",
+        "slug": "baby-care",
+        "description": "Baby products and essentials",
+        "display_order": 6,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Baby Food & Formula",
+            "slug": "baby-food-formula",
+            "description": "Baby food, formula milk, cereals",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Baby Formula",
+                "slug": "baby-formula",
+                "description": "Infant formula, follow-up formula",
+                "display_order": 1
+              },
+              {
+                "name": "Baby Cereals",
+                "slug": "baby-cereals",
+                "description": "Rice cereal, wheat cereal, mixed",
+                "display_order": 2
+              },
+              {
+                "name": "Baby Food Jars",
+                "slug": "baby-food-jars",
+                "description": "Ready to eat baby food",
+                "display_order": 3
+              },
+              {
+                "name": "Baby Snacks",
+                "slug": "baby-snacks",
+                "description": "Baby biscuits, teethers, puffs",
+                "display_order": 4
+              },
+              {
+                "name": "Baby Drinks",
+                "slug": "baby-drinks",
+                "description": "Baby juices, health drinks",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Baby Diapers & Wipes",
+            "slug": "baby-diapers-wipes",
+            "description": "Diapers, wipes, changing essentials",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Diapers",
+                "slug": "diapers",
+                "description": "Pampers, Huggies, local brands",
+                "display_order": 1
+              },
+              {
+                "name": "Baby Wipes",
+                "slug": "baby-wipes",
+                "description": "Wet wipes, dry wipes, sanitizing wipes",
+                "display_order": 2
+              },
+              {
+                "name": "Diaper Rash Cream",
+                "slug": "diaper-rash-cream",
+                "description": "Diaper rash cream, powder",
+                "display_order": 3
+              },
+              {
+                "name": "Changing Mats",
+                "slug": "changing-mats",
+                "description": "Changing mats, pads",
+                "display_order": 4
+              },
+              {
+                "name": "Diaper Bags",
+                "slug": "diaper-bags",
+                "description": "Diaper bags, storage",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Baby Bath & Skincare",
+            "slug": "baby-bath-skincare",
+            "description": "Baby soap, shampoo, lotions",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Baby Soap & Shampoo",
+                "slug": "baby-soap-shampoo",
+                "description": "Baby soap, baby shampoo, body wash",
+                "display_order": 1
+              },
+              {
+                "name": "Baby Lotion & Oil",
+                "slug": "baby-lotion-oil",
+                "description": "Baby lotion, baby oil, massage oil",
+                "display_order": 2
+              },
+              {
+                "name": "Baby Powder",
+                "slug": "baby-powder",
+                "description": "Talcum powder, prickly heat powder",
+                "display_order": 3
+              },
+              {
+                "name": "Baby Wipes & Tissues",
+                "slug": "baby-wipes-tissues",
+                "description": "Baby tissues, wet wipes",
+                "display_order": 4
+              },
+              {
+                "name": "Baby Bath Accessories",
+                "slug": "baby-bath-accessories",
+                "description": "Baby tub, bath toys, towels",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Baby Clothing & Accessories",
+            "slug": "baby-clothing-accessories",
+            "description": "Baby clothes, accessories",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Baby Clothes",
+                "slug": "baby-clothes",
+                "description": "Onesies, rompers, dresses",
+                "display_order": 1
+              },
+              {
+                "name": "Baby Blankets",
+                "slug": "baby-blankets",
+                "description": "Swaddles, blankets, comforters",
+                "display_order": 2
+              },
+              {
+                "name": "Baby Shoes & Socks",
+                "slug": "baby-shoes-socks",
+                "description": "Baby shoes, booties, socks",
+                "display_order": 3
+              },
+              {
+                "name": "Baby Accessories",
+                "slug": "baby-accessories",
+                "description": "Bibs, pacifiers, teethers",
+                "display_order": 4
+              },
+              {
+                "name": "Baby Toys",
+                "slug": "baby-toys",
+                "description": "Rattles, soft toys, educational toys",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Baby Health & Safety",
+            "slug": "baby-health-safety",
+            "description": "Baby health products and safety items",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "Baby Thermometers",
+                "slug": "baby-thermometers",
+                "description": "Digital thermometers, ear thermometers",
+                "display_order": 1
+              },
+              {
+                "name": "Baby Medicines",
+                "slug": "baby-medicines",
+                "description": "Baby paracetamol, cough syrup",
+                "display_order": 2
+              },
+              {
+                "name": "Baby Safety",
+                "slug": "baby-safety",
+                "description": "Baby monitors, safety gates",
+                "display_order": 3
+              },
+              {
+                "name": "Feeding Essentials",
+                "slug": "feeding-essentials",
+                "description": "Bottles, sippers, feeding bowls",
+                "display_order": 4
+              },
+              {
+                "name": "Baby Vitamins",
+                "slug": "baby-vitamins",
+                "description": "Vitamin D, multivitamins for babies",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Home & Kitchen",
+        "slug": "home-kitchen",
+        "description": "Home and kitchen essentials",
+        "display_order": 7,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Kitchen Appliances",
+            "slug": "kitchen-appliances",
+            "description": "Mixer, grinder, toaster, oven",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Mixer Grinders",
+                "slug": "mixer-grinders",
+                "description": "Mixer grinder, juicer mixer grinder",
+                "display_order": 1
+              },
+              {
+                "name": "Toasters & Ovens",
+                "slug": "toasters-ovens",
+                "description": "Toaster, OTG, microwave ovens",
+                "display_order": 2
+              },
+              {
+                "name": "Pressure Cookers",
+                "slug": "pressure-cookers",
+                "description": "Pressure cooker, cooker accessories",
+                "display_order": 3
+              },
+              {
+                "name": "Electric Kettles",
+                "slug": "electric-kettles",
+                "description": "Electric kettle, water heater",
+                "display_order": 4
+              },
+              {
+                "name": "Kitchen Tools",
+                "slug": "kitchen-tools",
+                "description": "Chopper, peeler, kitchen gadgets",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Cookware & Bakeware",
+            "slug": "cookware-bakeware",
+            "description": "Pans, pots, baking dishes",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Non-Stick Cookware",
+                "slug": "non-stick-cookware",
+                "description": "Non-stick pans, kadhai, tawa",
+                "display_order": 1
+              },
+              {
+                "name": "Stainless Steel",
+                "slug": "stainless-steel",
+                "description": "SS utensils, pressure cooker",
+                "display_order": 2
+              },
+              {
+                "name": "Cast Iron & Traditional",
+                "slug": "cast-iron-traditional",
+                "description": "Cast iron kadhai, traditional cookware",
+                "display_order": 3
+              },
+              {
+                "name": "Baking Dishes",
+                "slug": "baking-dishes",
+                "description": "Baking trays, cake molds, muffin tins",
+                "display_order": 4
+              },
+              {
+                "name": "Cookware Sets",
+                "slug": "cookware-sets",
+                "description": "Cookware sets, utensil sets",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Kitchen Storage",
+            "slug": "kitchen-storage",
+            "description": "Containers, jars, storage solutions",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Food Containers",
+                "slug": "food-containers",
+                "description": "Plastic containers, steel containers",
+                "display_order": 1
+              },
+              {
+                "name": "Storage Jars",
+                "slug": "storage-jars",
+                "description": "Glass jars, plastic jars, masala boxes",
+                "display_order": 2
+              },
+              {
+                "name": "Lunch Boxes",
+                "slug": "lunch-boxes",
+                "description": "Tiffin boxes, lunch boxes, water bottles",
+                "display_order": 3
+              },
+              {
+                "name": "Kitchen Organizers",
+                "slug": "kitchen-organizers",
+                "description": "Spice racks, organizers, baskets",
+                "display_order": 4
+              },
+              {
+                "name": "Vacuum Storage",
+                "slug": "vacuum-storage",
+                "description": "Vacuum bags, storage bags",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Dining & Serving",
+            "slug": "dining-serving",
+            "description": "Plates, bowls, serving dishes",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Dinner Sets",
+                "slug": "dinner-sets",
+                "description": "Dinner plates, bowls, sets",
+                "display_order": 1
+              },
+              {
+                "name": "Serving Dishes",
+                "slug": "serving-dishes",
+                "description": "Serving bowls, platters, trays",
+                "display_order": 2
+              },
+              {
+                "name": "Cutlery & Utensils",
+                "slug": "cutlery-utensils",
+                "description": "Spoons, forks, knives, serving spoons",
+                "display_order": 3
+              },
+              {
+                "name": "Drinkware",
+                "slug": "drinkware",
+                "description": "Glasses, mugs, cups, tumblers",
+                "display_order": 4
+              },
+              {
+                "name": "Tableware Accessories",
+                "slug": "tableware-accessories",
+                "description": "Placemats, coasters, napkins",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Cleaning Supplies",
+            "slug": "cleaning-supplies",
+            "description": "Cleaning products and tools",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "Dishwashing",
+                "slug": "dishwashing",
+                "description": "Dish soap, scrubbers, sponges",
+                "display_order": 1
+              },
+              {
+                "name": "Floor Cleaners",
+                "slug": "floor-cleaners",
+                "description": "Floor cleaner, phenyl, detergents",
+                "display_order": 2
+              },
+              {
+                "name": "Bathroom Cleaners",
+                "slug": "bathroom-cleaners",
+                "description": "Toilet cleaner, bathroom cleaner",
+                "display_order": 3
+              },
+              {
+                "name": "Cleaning Tools",
+                "slug": "cleaning-tools",
+                "description": "Brooms, mops, dusters, brushes",
+                "display_order": 4
+              },
+              {
+                "name": "Kitchen Towels",
+                "slug": "kitchen-towels",
+                "description": "Kitchen towels, dishcloths, wipes",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Health & Wellness",
+        "slug": "health-wellness",
+        "description": "Health and wellness products",
+        "display_order": 8,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Vitamins & Supplements",
+            "slug": "vitamins-supplements",
+            "description": "Vitamins, supplements, health products",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Multivitamins",
+                "slug": "multivitamins",
+                "description": "Multivitamin tablets, capsules",
+                "display_order": 1
+              },
+              {
+                "name": "Vitamin D & Calcium",
+                "slug": "vitamin-d-calcium",
+                "description": "Vitamin D, calcium supplements",
+                "display_order": 2
+              },
+              {
+                "name": "Protein Supplements",
+                "slug": "protein-supplements",
+                "description": "Whey protein, plant protein",
+                "display_order": 3
+              },
+              {
+                "name": "Omega & Fish Oil",
+                "slug": "omega-fish-oil",
+                "description": "Omega 3, fish oil capsules",
+                "display_order": 4
+              },
+              {
+                "name": "Herbal Supplements",
+                "slug": "herbal-supplements",
+                "description": "Ashwagandha, turmeric, herbal",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Ayurveda & Herbal",
+            "slug": "ayurveda-herbal",
+            "description": "Ayurvedic and herbal products",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Ayurvedic Medicines",
+                "slug": "ayurvedic-medicines",
+                "description": "Ayurvedic tablets, syrups",
+                "display_order": 1
+              },
+              {
+                "name": "Herbal Teas",
+                "slug": "herbal-teas",
+                "description": "Green tea, herbal tea, tulsi tea",
+                "display_order": 2
+              },
+              {
+                "name": "Chyawanprash & Tonics",
+                "slug": "chyawanprash-tonics",
+                "description": "Chyawanprash, health tonics",
+                "display_order": 3
+              },
+              {
+                "name": "Honey & Natural",
+                "slug": "honey-natural",
+                "description": "Pure honey, natural products",
+                "display_order": 4
+              },
+              {
+                "name": "Ayurvedic Oils",
+                "slug": "ayurvedic-oils",
+                "description": "Medicated oils, massage oils",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Fitness & Sports",
+            "slug": "fitness-sports",
+            "description": "Fitness equipment and sports items",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Protein & Nutrition",
+                "slug": "protein-nutrition",
+                "description": "Protein bars, energy bars",
+                "display_order": 1
+              },
+              {
+                "name": "Sports Accessories",
+                "slug": "sports-accessories",
+                "description": "Sports equipment, accessories",
+                "display_order": 2
+              },
+              {
+                "name": "Fitness Equipment",
+                "slug": "fitness-equipment",
+                "description": "Dumbbells, yoga mats, resistance bands",
+                "display_order": 3
+              },
+              {
+                "name": "Energy Drinks",
+                "slug": "energy-drinks",
+                "description": "Sports drinks, energy drinks",
+                "display_order": 4
+              },
+              {
+                "name": "Weight Management",
+                "slug": "weight-management",
+                "description": "Weight loss products, meal replacements",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Wellness & Personal Care",
+            "slug": "wellness-personal-care",
+            "description": "Wellness and personal care products",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Face Masks & Skincare",
+                "slug": "face-masks-skincare",
+                "description": "Face masks, skincare products",
+                "display_order": 1
+              },
+              {
+                "name": "Hair Care Wellness",
+                "slug": "hair-care-wellness",
+                "description": "Hair oils, hair care products",
+                "display_order": 2
+              },
+              {
+                "name": "Body Care",
+                "slug": "body-care",
+                "description": "Body lotions, body oils, scrubs",
+                "display_order": 3
+              },
+              {
+                "name": "Aromatherapy",
+                "slug": "aromatherapy",
+                "description": "Essential oils, diffusers, candles",
+                "display_order": 4
+              },
+              {
+                "name": "Wellness Accessories",
+                "slug": "wellness-accessories",
+                "description": "Massage tools, wellness gadgets",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Medical Supplies",
+            "slug": "medical-supplies",
+            "description": "Basic medical supplies and equipment",
+            "display_order": 5,
+            "children": [
+              {
+                "name": "First Aid",
+                "slug": "first-aid",
+                "description": "Bandages, antiseptics, first aid kit",
+                "display_order": 1
+              },
+              {
+                "name": "Thermometers",
+                "slug": "thermometers",
+                "description": "Digital thermometers, infrared",
+                "display_order": 2
+              },
+              {
+                "name": "BP Monitors",
+                "slug": "bp-monitors",
+                "description": "Blood pressure monitors",
+                "display_order": 3
+              },
+              {
+                "name": "Health Monitors",
+                "slug": "health-monitors",
+                "description": "Weighing scales, health trackers",
+                "display_order": 4
+              },
+              {
+                "name": "Medical Accessories",
+                "slug": "medical-accessories",
+                "description": "Masks, gloves, sanitizers",
+                "display_order": 5
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Electronics & Mobiles",
+        "slug": "electronics-mobiles",
+        "description": "Electronics and mobile phones",
+        "display_order": 9,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Mobile Phones",
+            "slug": "mobile-phones",
+            "description": "Smartphones, feature phones",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Smartphones",
+                "slug": "smartphones",
+                "description": "Android, iOS smartphones",
+                "display_order": 1
+              },
+              {
+                "name": "Feature Phones",
+                "slug": "feature-phones",
+                "description": "Basic phones, keypad phones",
+                "display_order": 2
+              },
+              {
+                "name": "Refurbished Phones",
+                "slug": "refurbished-phones",
+                "description": "Refurbished, used phones",
+                "display_order": 3
+              },
+              {
+                "name": "Mobile Accessories",
+                "slug": "mobile-accessories",
+                "description": "Cases, covers, screen guards",
+                "display_order": 4
+              },
+              {
+                "name": "Mobile Chargers",
+                "slug": "mobile-chargers",
+                "description": "Chargers, cables, power banks",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Home Appliances",
+            "slug": "home-appliances",
+            "description": "Home and kitchen appliances",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Fans & Coolers",
+                "slug": "fans-coolers",
+                "description": "Ceiling fans, table fans, coolers",
+                "display_order": 1
+              },
+              {
+                "name": "Water Purifiers",
+                "slug": "water-purifiers",
+                "description": "RO purifiers, water filters",
+                "display_order": 2
+              },
+              {
+                "name": "Iron & Steamers",
+                "slug": "iron-steamers",
+                "description": "Iron, steam iron, garment steamer",
+                "display_order": 3
+              },
+              {
+                "name": "Geysers & Heaters",
+                "slug": "geysers-heaters",
+                "description": "Water geysers, room heaters",
+                "display_order": 4
+              },
+              {
+                "name": "Air Purifiers",
+                "slug": "air-purifiers",
+                "description": "Air purifiers, humidifiers",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Computers & Laptops",
+            "slug": "computers-laptops",
+            "description": "Laptops, desktops, accessories",
+            "display_order": 3,
+            "children": [
+              {
+                "name": "Laptops",
+                "slug": "laptops",
+                "description": "Laptops, notebooks, ultrabooks",
+                "display_order": 1
+              },
+              {
+                "name": "Desktops",
+                "slug": "desktops",
+                "description": "Desktop computers, all-in-one",
+                "display_order": 2
+              },
+              {
+                "name": "Computer Accessories",
+                "slug": "computer-accessories",
+                "description": "Keyboards, mouse, webcams",
+                "display_order": 3
+              },
+              {
+                "name": "Storage & Memory",
+                "slug": "storage-memory",
+                "description": "Pen drives, memory cards, hard drives",
+                "display_order": 4
+              },
+              {
+                "name": "Printers & Scanners",
+                "slug": "printers-scanners",
+                "description": "Printers, scanners, cartridges",
+                "display_order": 5
+              }
+            ]
+          },
+          {
+            "name": "Audio & Headphones",
+            "slug": "audio-headphones",
+            "description": "Headphones, speakers, audio devices",
+            "display_order": 4,
+            "children": [
+              {
+                "name": "Headphones & Earphones",
+                "slug": "headphones-earphones",
+                "description": "Wired, wireless headphones",
+                "display_order": 1
+              },
+              {
+                "name": "Speakers",
+                "slug": "speakers",
+                "description": "Bluetooth speakers, soundbars",
+                "display_order": 2
+              }
+            ]
+        }
+    ]
+  }
+]
+}

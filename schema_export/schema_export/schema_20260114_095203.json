@@ -1,0 +1,3864 @@
+{
+  "exported_at": "2026-01-14T09:52:04.169201",
+  "database": "banda_ecommerce",
+  "tables": {
+    "alembic_version": {
+      "columns": [
+        {
+          "name": "version_num",
+          "type": "VARCHAR(32)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "version_num"
+      ],
+      "foreign_keys": [],
+      "indexes": [],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "product_attribute_values": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "attribute_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "value",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "value_json",
+          "type": "JSON",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "product_attribute_values_attribute_id_fkey",
+          "constrained_columns": [
+            "attribute_id"
+          ],
+          "referred_table": "category_attributes",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "product_attribute_values_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_product_attribute_values_attribute_id",
+          "columns": [
+            "attribute_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_product_attribute_values_product_id",
+          "columns": [
+            "product_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "payments": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "razorpay_order_id",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "razorpay_payment_id",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "razorpay_signature",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "currency",
+          "type": "VARCHAR(10)",
+          "nullable": false,
+          "default": "'INR'::character varying",
+          "autoincrement": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(10)",
+          "nullable": false,
+          "default": "'PENDING'::paymentstatus",
+          "autoincrement": false
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "failure_reason",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "payments_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_payments_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_payments_razorpay_order_id",
+          "columns": [
+            "razorpay_order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_payments_razorpay_payment_id",
+          "columns": [
+            "razorpay_payment_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_payments_status",
+          "columns": [
+            "status"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "payment_logs": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "payment_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "event_type",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "payload",
+          "type": "JSON",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "payment_logs_payment_id_fkey",
+          "constrained_columns": [
+            "payment_id"
+          ],
+          "referred_table": "payments",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_payment_logs_event_type",
+          "columns": [
+            "event_type"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_payment_logs_payment_id",
+          "columns": [
+            "payment_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "delivery_partners": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "user_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "phone",
+          "type": "VARCHAR(15)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "vehicle_type",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "vehicle_number",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "true",
+          "autoincrement": false
+        },
+        {
+          "name": "is_available",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "true",
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "delivery_partners_user_id_fkey",
+          "constrained_columns": [
+            "user_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_delivery_partners_phone",
+          "columns": [
+            "phone"
+          ],
+          "unique": true
+        },
+        {
+          "name": "ix_delivery_partners_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "category_attributes": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "category_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "attribute_type",
+          "type": "VARCHAR(12)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "options",
+          "type": "JSON",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "unit",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_required",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_inherited",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_filterable",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_searchable",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "display_order",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "show_in_listing",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "show_in_details",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "segment_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "category_attributes_category_id_fkey",
+          "constrained_columns": [
+            "category_id"
+          ],
+          "referred_table": "categories",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "fk_category_attributes_segment_id",
+          "constrained_columns": [
+            "segment_id"
+          ],
+          "referred_table": "attribute_segments",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_category_attributes_category_id",
+          "columns": [
+            "category_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_category_attributes_segment_id",
+          "columns": [
+            "segment_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_category_attributes_slug",
+          "columns": [
+            "slug"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "categories": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "image_url",
+          "type": "VARCHAR(500)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "parent_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "display_order",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "categories_parent_id_fkey",
+          "constrained_columns": [
+            "parent_id"
+          ],
+          "referred_table": "categories",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_categories_parent_id",
+          "columns": [
+            "parent_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_categories_slug",
+          "columns": [
+            "slug"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "service_zones": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "zone_name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "center_latitude",
+          "type": "NUMERIC(10, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "center_longitude",
+          "type": "NUMERIC(11, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "radius_km",
+          "type": "NUMERIC(5, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_fee",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "min_order_value",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "estimated_time_mins",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "name": "ix_service_zones_city",
+          "columns": [
+            "city"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "users": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "phone",
+          "type": "VARCHAR(15)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "password_hash",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_email_verified",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "last_login",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "name": "ix_users_email",
+          "columns": [
+            "email"
+          ],
+          "unique": true
+        },
+        {
+          "name": "ix_users_phone",
+          "columns": [
+            "phone"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "carts": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "buyer_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "coupon_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "discount_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": "0.00",
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "carts_buyer_id_fkey",
+          "constrained_columns": [
+            "buyer_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "fk_carts_coupon",
+          "constrained_columns": [
+            "coupon_id"
+          ],
+          "referred_table": "coupons",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_carts_buyer_id",
+          "columns": [
+            "buyer_id"
+          ],
+          "unique": true
+        },
+        {
+          "name": "ix_carts_coupon_id",
+          "columns": [
+            "coupon_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "delivery_addresses": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "buyer_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "recipient_name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "recipient_phone",
+          "type": "VARCHAR(15)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "address_line_1",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "address_line_2",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "pincode",
+          "type": "VARCHAR(10)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "landmark",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "latitude",
+          "type": "NUMERIC(10, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "longitude",
+          "type": "NUMERIC(11, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_default",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "delivery_addresses_buyer_id_fkey",
+          "constrained_columns": [
+            "buyer_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_delivery_addresses_buyer_id",
+          "columns": [
+            "buyer_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "refresh_tokens": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "user_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "token",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "expires_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_revoked",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "refresh_tokens_user_id_fkey",
+          "constrained_columns": [
+            "user_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_refresh_tokens_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "refresh_tokens_token_key",
+          "columns": [
+            "token"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [
+        {
+          "name": "refresh_tokens_token_key",
+          "columns": [
+            "token"
+          ]
+        }
+      ],
+      "check_constraints": []
+    },
+    "vendors": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "user_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "shop_name",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "logo_url",
+          "type": "VARCHAR(500)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "address_line_1",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "address_line_2",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "state",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "pincode",
+          "type": "VARCHAR(10)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "latitude",
+          "type": "NUMERIC(10, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "longitude",
+          "type": "NUMERIC(11, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_radius_km",
+          "type": "NUMERIC(5, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "phone",
+          "type": "VARCHAR(15)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_verified",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "rating",
+          "type": "NUMERIC(2, 1)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "total_orders",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "total_reviews",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "commission_percent",
+          "type": "NUMERIC(4, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cod_enabled",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "verified_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "vendors_user_id_fkey",
+          "constrained_columns": [
+            "user_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_vendors_city",
+          "columns": [
+            "city"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_vendors_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "inventory": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "available_quantity",
+          "type": "NUMERIC(10, 3)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "reserved_quantity",
+          "type": "NUMERIC(10, 3)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "low_stock_threshold",
+          "type": "NUMERIC(10, 3)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "inventory_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_inventory_product_id",
+          "columns": [
+            "product_id"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "product_images": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "image_url",
+          "type": "VARCHAR(500)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "display_order",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_primary",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "product_images_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_product_images_product_id",
+          "columns": [
+            "product_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "sell_units": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "label",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "unit_value",
+          "type": "NUMERIC(10, 3)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "price",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "compare_price",
+          "type": "NUMERIC(10, 2)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "sell_units_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_sell_units_product_id",
+          "columns": [
+            "product_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "stock_reservations": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "reserved_quantity",
+          "type": "NUMERIC(10, 3)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "expires_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "confirmed_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "released_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "stock_reservations_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "stock_reservations_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_stock_reservations_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_stock_reservations_product_id",
+          "columns": [
+            "product_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_stock_reservations_status",
+          "columns": [
+            "status"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "products": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "vendor_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "category_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "stock_unit",
+          "type": "VARCHAR(5)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_deleted",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "return_eligible",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "false",
+          "autoincrement": false
+        },
+        {
+          "name": "return_window_days",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "return_conditions",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "products_category_id_fkey",
+          "constrained_columns": [
+            "category_id"
+          ],
+          "referred_table": "categories",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "products_vendor_id_fkey",
+          "constrained_columns": [
+            "vendor_id"
+          ],
+          "referred_table": "vendors",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_products_category_id",
+          "columns": [
+            "category_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_products_slug",
+          "columns": [
+            "slug"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_products_vendor_id",
+          "columns": [
+            "vendor_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "cart_items": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cart_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "sell_unit_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "cart_items_cart_id_fkey",
+          "constrained_columns": [
+            "cart_id"
+          ],
+          "referred_table": "carts",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "cart_items_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "cart_items_sell_unit_id_fkey",
+          "constrained_columns": [
+            "sell_unit_id"
+          ],
+          "referred_table": "sell_units",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_cart_items_cart_id",
+          "columns": [
+            "cart_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_cart_items_product_id",
+          "columns": [
+            "product_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_cart_items_sell_unit_id",
+          "columns": [
+            "sell_unit_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "uq_cart_sell_unit",
+          "columns": [
+            "cart_id",
+            "sell_unit_id"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [
+        {
+          "name": "uq_cart_sell_unit",
+          "columns": [
+            "cart_id",
+            "sell_unit_id"
+          ]
+        }
+      ],
+      "check_constraints": []
+    },
+    "orders": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_number",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "buyer_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "vendor_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_address_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_address_snapshot",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_latitude",
+          "type": "NUMERIC(10, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_longitude",
+          "type": "NUMERIC(11, 8)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_distance_km",
+          "type": "NUMERIC(5, 2)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "subtotal",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_fee",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "discount_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "tax_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "total_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "payment_mode",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "payment_status",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_status",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "notes",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cancellation_reason",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "placed_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "confirmed_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "processing_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "shipped_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivered_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cancelled_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "picked_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "packed_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "out_for_delivery_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_partner_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_otp",
+          "type": "VARCHAR(6)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "fk_orders_delivery_partner_id",
+          "constrained_columns": [
+            "delivery_partner_id"
+          ],
+          "referred_table": "delivery_partners",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "orders_buyer_id_fkey",
+          "constrained_columns": [
+            "buyer_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "orders_delivery_address_id_fkey",
+          "constrained_columns": [
+            "delivery_address_id"
+          ],
+          "referred_table": "delivery_addresses",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "orders_vendor_id_fkey",
+          "constrained_columns": [
+            "vendor_id"
+          ],
+          "referred_table": "vendors",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_orders_buyer_id",
+          "columns": [
+            "buyer_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_orders_delivery_otp",
+          "columns": [
+            "delivery_otp"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_orders_delivery_partner_id",
+          "columns": [
+            "delivery_partner_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_orders_order_number",
+          "columns": [
+            "order_number"
+          ],
+          "unique": true
+        },
+        {
+          "name": "ix_orders_order_status",
+          "columns": [
+            "order_status"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_orders_vendor_id",
+          "columns": [
+            "vendor_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "order_items": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "sell_unit_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "product_name",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "sell_unit_label",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "unit_value",
+          "type": "NUMERIC(10, 3)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "price_per_unit",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "total_price",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "return_eligible",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "false",
+          "autoincrement": false
+        },
+        {
+          "name": "return_window_days",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "return_deadline",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "order_items_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "order_items_product_id_fkey",
+          "constrained_columns": [
+            "product_id"
+          ],
+          "referred_table": "products",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "order_items_sell_unit_id_fkey",
+          "constrained_columns": [
+            "sell_unit_id"
+          ],
+          "referred_table": "sell_units",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_order_items_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "delivery_history": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_partner_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "attempt_number",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_cod",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cod_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cod_collected",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "cod_collected_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "failure_reason",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "failure_notes",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "assigned_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "attempted_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "completed_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "delivery_time_minutes",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "delivery_history_delivery_partner_id_fkey",
+          "constrained_columns": [
+            "delivery_partner_id"
+          ],
+          "referred_table": "delivery_partners",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "delivery_history_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_delivery_history_delivery_partner_id",
+          "columns": [
+            "delivery_partner_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_delivery_history_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "notifications": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "user_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "type",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "priority",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR(200)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "message",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "action_url",
+          "type": "VARCHAR(500)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "action_label",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "related_entity_type",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "related_entity_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "extra_data",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "is_read",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "read_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "notifications_user_id_fkey",
+          "constrained_columns": [
+            "user_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_notifications_created_at",
+          "columns": [
+            "created_at"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_notifications_is_read",
+          "columns": [
+            "is_read"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_notifications_related_entity_id",
+          "columns": [
+            "related_entity_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_notifications_type",
+          "columns": [
+            "type"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_notifications_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "coupons": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "discount_type",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "discount_value",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "min_order_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": "0.00",
+          "autoincrement": false
+        },
+        {
+          "name": "max_discount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "expiry_date",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "usage_limit",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "used_count",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": "0",
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "true",
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        {
+          "name": "ix_coupons_code",
+          "columns": [
+            "code"
+          ],
+          "unique": true
+        },
+        {
+          "name": "ix_coupons_is_active",
+          "columns": [
+            "is_active"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "coupon_usages": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "coupon_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "user_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "discount_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "coupon_usages_coupon_id_fkey",
+          "constrained_columns": [
+            "coupon_id"
+          ],
+          "referred_table": "coupons",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "coupon_usages_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "coupon_usages_user_id_fkey",
+          "constrained_columns": [
+            "user_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_coupon_usages_coupon_id",
+          "columns": [
+            "coupon_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_coupon_usages_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_coupon_usages_user_id",
+          "columns": [
+            "user_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "return_requests": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_item_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "buyer_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "reason",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "images",
+          "type": "JSON",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": "'requested'::character varying",
+          "autoincrement": false
+        },
+        {
+          "name": "refund_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": "0.00",
+          "autoincrement": false
+        },
+        {
+          "name": "admin_notes",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "vendor_notes",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "resolved_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "return_requests_buyer_id_fkey",
+          "constrained_columns": [
+            "buyer_id"
+          ],
+          "referred_table": "users",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "return_requests_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "return_requests_order_item_id_fkey",
+          "constrained_columns": [
+            "order_item_id"
+          ],
+          "referred_table": "order_items",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_return_requests_buyer_id",
+          "columns": [
+            "buyer_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_return_requests_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_return_requests_order_item_id",
+          "columns": [
+            "order_item_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_return_requests_status",
+          "columns": [
+            "status"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "refunds": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "payment_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "return_request_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "razorpay_refund_id",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": "'initiated'::character varying",
+          "autoincrement": false
+        },
+        {
+          "name": "failure_reason",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "processed_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "refunds_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        },
+        {
+          "name": "refunds_payment_id_fkey",
+          "constrained_columns": [
+            "payment_id"
+          ],
+          "referred_table": "payments",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "refunds_return_request_id_fkey",
+          "constrained_columns": [
+            "return_request_id"
+          ],
+          "referred_table": "return_requests",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_refunds_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_refunds_payment_id",
+          "columns": [
+            "payment_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_refunds_razorpay_refund_id",
+          "columns": [
+            "razorpay_refund_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_refunds_return_request_id",
+          "columns": [
+            "return_request_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_refunds_status",
+          "columns": [
+            "status"
+          ],
+          "unique": false
+        },
+        {
+          "name": "refunds_return_request_id_key",
+          "columns": [
+            "return_request_id"
+          ],
+          "unique": true
+        }
+      ],
+      "unique_constraints": [
+        {
+          "name": "refunds_return_request_id_key",
+          "columns": [
+            "return_request_id"
+          ]
+        }
+      ],
+      "check_constraints": []
+    },
+    "vendor_payouts": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "vendor_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "period_start",
+          "type": "DATE",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "period_end",
+          "type": "DATE",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "total_orders",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": "0",
+          "autoincrement": false
+        },
+        {
+          "name": "gross_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": "0.00",
+          "autoincrement": false
+        },
+        {
+          "name": "commission_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": "0.00",
+          "autoincrement": false
+        },
+        {
+          "name": "refund_deductions",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": "0.00",
+          "autoincrement": false
+        },
+        {
+          "name": "net_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": "'pending'::character varying",
+          "autoincrement": false
+        },
+        {
+          "name": "transaction_id",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "processed_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "vendor_payouts_vendor_id_fkey",
+          "constrained_columns": [
+            "vendor_id"
+          ],
+          "referred_table": "vendors",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_vendor_payouts_status",
+          "columns": [
+            "status"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_vendor_payouts_transaction_id",
+          "columns": [
+            "transaction_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_vendor_payouts_vendor_id",
+          "columns": [
+            "vendor_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "vendor_payout_items": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "payout_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_id",
+          "type": "UUID",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "order_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "commission",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "net_amount",
+          "type": "NUMERIC(10, 2)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "vendor_payout_items_order_id_fkey",
+          "constrained_columns": [
+            "order_id"
+          ],
+          "referred_table": "orders",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "SET NULL",
+          "onupdate": null
+        },
+        {
+          "name": "vendor_payout_items_payout_id_fkey",
+          "constrained_columns": [
+            "payout_id"
+          ],
+          "referred_table": "vendor_payouts",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_vendor_payout_items_order_id",
+          "columns": [
+            "order_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_vendor_payout_items_payout_id",
+          "columns": [
+            "payout_id"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    },
+    "attribute_segments": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "category_id",
+          "type": "UUID",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(100)",
+          "nullable": false,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "icon",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        },
+        {
+          "name": "display_order",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": "0",
+          "autoincrement": false
+        },
+        {
+          "name": "is_collapsible",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "true",
+          "autoincrement": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": "true",
+          "autoincrement": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": "now()",
+          "autoincrement": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "autoincrement": false
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_keys": [
+        {
+          "name": "attribute_segments_category_id_fkey",
+          "constrained_columns": [
+            "category_id"
+          ],
+          "referred_table": "categories",
+          "referred_columns": [
+            "id"
+          ],
+          "ondelete": "CASCADE",
+          "onupdate": null
+        }
+      ],
+      "indexes": [
+        {
+          "name": "ix_attribute_segments_category_id",
+          "columns": [
+            "category_id"
+          ],
+          "unique": false
+        },
+        {
+          "name": "ix_attribute_segments_display_order",
+          "columns": [
+            "display_order"
+          ],
+          "unique": false
+        }
+      ],
+      "unique_constraints": [],
+      "check_constraints": []
+    }
+  }
+}

@@ -1,0 +1,54 @@
+# Root .gitignore for Monorepo
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment files (NEVER commit these!)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Logs
+*.log
+logs/
+*.pid
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts (handled by subdirectory .gitignore)
+# But keep root-level build directories ignored
+/build
+/dist
+
+# Package manager locks (optional - some teams commit these)
+# package-lock.json
+# yarn.lock
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Misc
+*.bak
+*.cache
+.cache/

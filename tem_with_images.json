@@ -1,0 +1,46 @@
+{
+  "categories": [
+    {
+      "name": "Fresh Fruits & Vegetables",
+      "slug": "fresh-fruits-vegetables",
+      "description": "Fresh seasonal fruits and vegetables",
+      "display_order": 1,
+      "parent_id": null,
+      "children": [
+        {
+          "name": "Fresh Fruits",
+          "slug": "fresh-fruits",
+          "description": "Seasonal and exotic fruits",
+          "display_order": 1,
+          "children": [
+            {
+              "name": "Bananas & Plantains",
+              "slug": "bananas-plantains",
+              "description": "Fresh bananas and plantains",
+              "display_order": 1,
+              "image_url": "https://res.cloudinary.com/dycawfrr8/image/upload/v1768308767/banda_categories/banda_categories/level3/bananas_and_plantains.jpg"
+            }
+          ],
+          "image_url": "https://res.cloudinary.com/dycawfrr8/image/upload/v1768308763/banda_categories/banda_categories/level2/fresh_fruits.jpg"
+        },
+        {
+          "name": "Fresh Vegetables",
+          "slug": "fresh-vegetables",
+          "description": "Fresh seasonal vegetables",
+          "display_order": 2,
+          "children": [
+            {
+              "name": "Leafy Vegetables",
+              "slug": "leafy-vegetables",
+              "description": "Spinach, coriander, mint, fenugreek",
+              "display_order": 1,
+              "image_url": "https://res.cloudinary.com/dycawfrr8/image/upload/v1768308775/banda_categories/banda_categories/level3/leafy_vegetables.jpg"
+            }
+          ],
+          "image_url": "https://res.cloudinary.com/dycawfrr8/image/upload/v1768308771/banda_categories/banda_categories/level2/fresh_vegetables.jpg"
+        }
+      ],
+      "image_url": "https://res.cloudinary.com/dycawfrr8/image/upload/v1768308759/banda_categories/banda_categories/level1/fresh_fruits_and_vegetables.jpg"
+    }
+  ]
+}

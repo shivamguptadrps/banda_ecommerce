@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Banda",
+    "slug": "banda-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#7B2D8E"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.banda.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#7B2D8E"
+      },
+      "package": "com.banda.mobile"
+    },
+    "web": {},
+    "scheme": "banda",
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+    "categories": [
+      {
+        "name": "Fresh Fruits & Vegetables",
+        "slug": "fresh-fruits-vegetables",
+        "description": "Fresh seasonal fruits and vegetables",
+        "display_order": 1,
+        "parent_id": null,
+        "children": [
+          {
+            "name": "Fresh Fruits",
+            "slug": "fresh-fruits",
+            "description": "Seasonal and exotic fruits",
+            "display_order": 1,
+            "children": [
+              {
+                "name": "Bananas & Plantains",
+                "slug": "bananas-plantains",
+                "description": "Fresh bananas and plantains",
+                "display_order": 1
+              }
+            ]
+          },
+          {
+            "name": "Fresh Vegetables",
+            "slug": "fresh-vegetables",
+            "description": "Fresh seasonal vegetables",
+            "display_order": 2,
+            "children": [
+              {
+                "name": "Leafy Vegetables",
+                "slug": "leafy-vegetables",
+                "description": "Spinach, coriander, mint, fenugreek",
+                "display_order": 1
+              }
+            ]
+          }
+        ]
+      }
+]
+}
