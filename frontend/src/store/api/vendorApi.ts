@@ -171,6 +171,28 @@ export const vendorApi = createApi({
       providesTags: ["Vendor"],
     }),
 
+    // Authenticated: Update vendor profile
+    updateVendorProfile: builder.mutation<
+      Vendor,
+      {
+        shop_name?: string;
+        description?: string;
+        phone?: string;
+        address_line_1?: string;
+        address_line_2?: string;
+        city?: string;
+        state?: string;
+        pincode?: string;
+      }
+    >({
+      query: (data) => ({
+        url: `/vendor/profile`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Vendor"],
+    }),
+
     // Authenticated: Get vendor orders
     getVendorOrders: builder.query<
       { items: any[]; total: number; page: number; size: number; pages: number },
@@ -265,6 +287,7 @@ export const {
   useRegisterVendorMutation,
   useGetVendorProfileQuery,
   useGetVendorStatsQuery,
+  useUpdateVendorProfileMutation,
   useGetVendorOrdersQuery,
   useGetVendorOrderQuery,
   useAcceptOrderMutation,
