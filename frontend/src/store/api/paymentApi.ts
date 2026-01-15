@@ -81,7 +81,7 @@ export interface DuplicatePaymentDetection {
 export const paymentApi = createApi({
   reducerPath: "paymentApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Payment", "PaymentLog"],
+  tagTypes: ["Payment", "PaymentLog", "Order"],
   endpoints: (builder) => ({
     // Create Razorpay order
     createPaymentOrder: builder.mutation<PaymentCreateOrderResponse, PaymentCreate>({

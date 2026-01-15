@@ -32,6 +32,7 @@ import {
   useDeleteDeliveryPartnerMutation,
   DeliveryPartner,
   DeliveryPartnerCreate,
+  DeliveryPartnerUpdate,
 } from "@/store/api/adminApi";
 
 /**

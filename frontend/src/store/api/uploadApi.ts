@@ -31,7 +31,7 @@ export const uploadApi = createApi({
           method: "POST",
           body: formData,
           // Don't set Content-Type - browser will set it with boundary
-          prepareHeaders: (headers) => {
+          prepareHeaders: (headers: Headers) => {
             headers.delete("Content-Type");
             return headers;
           },
@@ -52,7 +52,7 @@ export const uploadApi = createApi({
           method: "POST",
           body: formData,
           // Don't set Content-Type - browser will set it with boundary
-          prepareHeaders: (headers) => {
+          prepareHeaders: (headers: Headers) => {
             headers.delete("Content-Type");
             return headers;
           },

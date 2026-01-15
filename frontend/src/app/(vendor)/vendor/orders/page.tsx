@@ -218,7 +218,15 @@ function OrderCard({
   // Determine available actions based on new status flow
   // Vendor can only: Accept, Reject, Mark as Picked, Mark as Packed
   // Delivery partner handles: Out for Delivery, Mark Delivered (with OTP)
-  const getActions = () => {
+  type Action = {
+    label: string;
+    onClick: () => void;
+    icon: React.ElementType;
+    variant: "primary" | "danger" | "success" | "outline";
+    disabled?: boolean;
+  };
+  
+  const getActions = (): Action[] => {
     const status = mappedStatus;
     switch (status) {
       case "placed":

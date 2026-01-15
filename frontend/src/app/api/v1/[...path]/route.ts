@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Use 127.0.0.1 instead of localhost for better compatibility
-const BACKEND_URL = process.env.BACKEND_URL || "http://127.0.0.1:8000";
+// Backend URL - prioritize environment variables
+// NEXT_PUBLIC_API_URL format: https://backend.railway.app/api/v1 (will strip /api/v1)
+// BACKEND_URL format: https://backend.railway.app
+const BACKEND_URL = 
+  process.env.BACKEND_URL || 
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  (process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '').replace(/\/$/, '')) ||
+  "http://127.0.0.1:8000";
 
 /**
  * API Proxy Route Handler

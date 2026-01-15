@@ -39,7 +39,7 @@ const handleUnauthorized = () => {
   const role = getUserRole();
   
   // Determine redirect path based on user role
-  let redirectPath = ROUTES.LOGIN;
+  let redirectPath: string = ROUTES.LOGIN;
   
   if (role === "admin") {
     redirectPath = ROUTES.ADMIN_LOGIN;

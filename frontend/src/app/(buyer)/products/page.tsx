@@ -22,6 +22,7 @@ import { SearchInput } from "@/components/search/SearchInput";
 import { useGetProductsQuery } from "@/store/api/productApi";
 import { useGetCategoryTreeQuery } from "@/store/api/categoryApi";
 import { ProductFilters } from "@/types/product";
+import { CategoryTreeNode } from "@/types/category";
 import { cn, formatPrice } from "@/lib/utils";
 
 /**
@@ -259,7 +260,7 @@ function DesktopFilters({
 }: {
   filters: ProductFilters;
   onFilterChange: (filters: ProductFilters) => void;
-  categories: { id: string; name: string; children?: any[] }[];
+  categories: CategoryTreeNode[];
 }) {
   return (
     <div className="hidden lg:block w-64 flex-shrink-0">

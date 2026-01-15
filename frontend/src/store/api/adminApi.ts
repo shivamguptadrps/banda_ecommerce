@@ -279,7 +279,7 @@ export interface Coupon {
   id: string;
   code: string;
   description?: string;
-  discount_type: "PERCENTAGE" | "FLAT";
+  discount_type: "percentage" | "flat";
   discount_value: number;
   min_order_amount: number;
   max_discount?: number;
@@ -297,7 +297,7 @@ export interface Coupon {
 export interface CouponCreate {
   code: string;
   description?: string;
-  discount_type: "PERCENTAGE" | "FLAT";
+  discount_type: "percentage" | "flat";
   discount_value: number;
   min_order_amount?: number;
   max_discount?: number;
@@ -311,7 +311,7 @@ export interface CouponCreate {
 export interface CouponUpdate {
   code?: string;
   description?: string;
-  discount_type?: "PERCENTAGE" | "FLAT";
+  discount_type?: "percentage" | "flat";
   discount_value?: number;
   min_order_amount?: number;
   max_discount?: number;
@@ -406,7 +406,7 @@ export interface OrderStats {
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["AdminVendor", "AdminCategory", "AdminOrder", "ServiceZone", "DashboardStats", "CategoryAttribute", "AttributeSegment", "DeliveryPartner", "Coupon"],
+  tagTypes: ["AdminVendor", "AdminCategory", "AdminOrder", "ServiceZone", "DashboardStats", "CategoryAttribute", "AttributeSegment", "DeliveryPartner", "Coupon", "Category"],
   endpoints: (builder) => ({
     // ============== Dashboard ==============
     
@@ -514,7 +514,7 @@ export const adminApi = createApi({
           url: `/admin/categories/${categoryId}/upload-image`,
           method: "POST",
           body: formData,
-          prepareHeaders: (headers) => {
+          prepareHeaders: (headers: Headers) => {
             headers.delete("Content-Type"); // Let browser set Content-Type with boundary
             return headers;
           },

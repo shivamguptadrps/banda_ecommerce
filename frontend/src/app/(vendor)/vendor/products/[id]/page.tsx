@@ -207,7 +207,7 @@ export default function ViewProductPage() {
                   <div>
                     <label className="text-sm font-medium text-gray-500">Category</label>
                     <p className="text-gray-900 font-medium mt-1">
-                      {product.category?.name || "N/A"}
+                      {product.category_name || "N/A"}
                     </p>
                   </div>
                 )}
@@ -265,7 +265,9 @@ export default function ViewProductPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Price Range</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {formatPrice(product.min_price)} - {formatPrice(product.max_price)}
+                    {product.min_price && product.max_price 
+                      ? `${formatPrice(product.min_price)} - ${formatPrice(product.max_price)}`
+                      : "N/A"}
                   </span>
                 </div>
               </div>

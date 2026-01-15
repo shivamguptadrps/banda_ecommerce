@@ -31,6 +31,7 @@ export interface DeliveryPartnerOrder {
   payment_mode: "online" | "cod";
   payment_status: string;
   order_status: string;
+  delivery_otp?: string;
   placed_at: string;
   confirmed_at?: string;
   picked_at?: string;
@@ -44,6 +45,13 @@ export interface DeliveryPartnerOrder {
     sell_unit_label: string;
     total_price: number;
   }>;
+  vendor_info?: {
+    id: string;
+    shop_name: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+  };
 }
 
 export interface DeliveryPartnerOrderListResponse {

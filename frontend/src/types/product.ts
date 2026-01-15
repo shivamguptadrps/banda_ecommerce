@@ -1,6 +1,7 @@
 /**
  * Product Types
  */
+import { ProductAttributeValue } from "./attribute";
 
 export interface Product {
   id: string;
@@ -154,7 +155,10 @@ export interface Cart {
   buyer_id: string;
   items: CartItem[];
   total_items: number;
-  total_amount: number;
+  subtotal: number;
+  discount_amount?: number;
+  coupon_code?: string;
+  is_empty?: boolean;
   created_at: string;
   updated_at: string;
 }

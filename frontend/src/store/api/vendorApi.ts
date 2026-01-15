@@ -54,6 +54,8 @@ export interface VendorOrder {
   order_number: string;
   buyer_id?: string;
   vendor_id?: string;
+  buyer_name?: string;
+  buyer_phone?: string;
   subtotal: number;
   delivery_fee: number;
   discount_amount: number;

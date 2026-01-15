@@ -489,9 +489,9 @@ export default function AdminCouponsPage() {
     return "An error occurred";
   };
 
-  const handleCreate = async (data: CouponCreate) => {
+  const handleCreate = async (data: CouponCreate | CouponUpdate) => {
     try {
-      await createCoupon(data).unwrap();
+      await createCoupon(data as CouponCreate).unwrap();
       toast.success("Coupon created successfully!");
       setIsModalOpen(false);
       setEditingCoupon(undefined);
@@ -510,10 +510,10 @@ export default function AdminCouponsPage() {
     }
   };
 
-  const handleUpdate = async (data: CouponUpdate) => {
+  const handleUpdate = async (data: CouponCreate | CouponUpdate) => {
     if (!editingCoupon) return;
     try {
-      await updateCoupon({ id: editingCoupon.id, data }).unwrap();
+      await updateCoupon({ id: editingCoupon.id, data: data as CouponUpdate }).unwrap();
       toast.success("Coupon updated successfully!");
       setIsModalOpen(false);
       setEditingCoupon(undefined);

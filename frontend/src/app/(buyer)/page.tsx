@@ -403,8 +403,8 @@ export default function HomePage() {
 
   // Organize categories into sections (matching React Native)
   const categorySections = useMemo(() => {
-    if (!categoryTreeData?.items) return [];
-    return categoryTreeData.items.map((topCategory) => ({
+    if (!categoryTreeData || categoryTreeData.length === 0) return [];
+    return categoryTreeData.map((topCategory) => ({
       topCategory,
       subcategories: topCategory.children || [],
     }));

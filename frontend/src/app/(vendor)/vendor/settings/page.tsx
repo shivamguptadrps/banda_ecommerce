@@ -47,9 +47,9 @@ export default function VendorSettingsPage() {
           phone: vendor.phone || "",
           address_line_1: vendor.address_line_1 || "",
           address_line_2: vendor.address_line_2 || "",
-          city: vendor.city,
-          state: vendor.state,
-          pincode: vendor.pincode,
+          city: vendor.city || "",
+          state: vendor.state || "",
+          pincode: vendor.pincode || "",
         }
       : undefined,
   });

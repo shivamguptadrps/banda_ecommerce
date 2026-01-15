@@ -13,7 +13,7 @@ import {
 export const refundApi = createApi({
   reducerPath: "refundApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Refund"],
+  tagTypes: ["Refund", "ReturnRequest"],
   endpoints: (builder) => ({
     // Create refund (Admin only)
     createRefund: builder.mutation<Refund, RefundCreate>({

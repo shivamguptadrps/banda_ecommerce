@@ -294,7 +294,7 @@ export default function AdminSegmentsPage() {
   const [reorderSegments] = useReorderSegmentsMutation();
 
   const categories = categoriesData?.items || [];
-  const segments = segmentsData || [];
+  const segments = segmentsData?.items || [];
 
   const toggleCategory = (categoryId: string) => {
     const newExpanded = new Set(expandedCategories);

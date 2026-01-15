@@ -3,9 +3,11 @@ Application Configuration
 Loads settings from environment variables
 """
 
+import json
 from functools import lru_cache
-from typing import List
+from typing import List, Union
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -68,6 +70,21 @@ class Settings(BaseSettings):
         "http://192.168.*.*:*",  # Local network IPs for mobile devices
         "*",  # Allow all origins in development (remove in production)
     ]
+    
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        """Parse CORS_ORIGINS from JSON string if provided."""
+        if isinstance(v, str):
+            try:
+                # Try to parse as JSON array
+                parsed = json.loads(v)
+                if isinstance(parsed, list):
+                    return parsed
+            except (json.JSONDecodeError, TypeError):
+                # If not JSON, treat as comma-separated string
+                return [origin.strip() for origin in v.split(",") if origin.strip()]
+        return v
     
     # Pagination
     default_page_size: int = 20

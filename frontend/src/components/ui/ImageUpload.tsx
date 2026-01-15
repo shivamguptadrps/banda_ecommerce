@@ -21,7 +21,7 @@ export interface UploadedImage {
 
 interface ImageUploadProps {
   images: UploadedImage[];
-  onChange: (images: UploadedImage[]) => void;
+  onChange: (images: UploadedImage[] | ((prev: UploadedImage[]) => UploadedImage[])) => void;
   maxImages?: number;
   minImages?: number;
   folder?: string;
@@ -95,88 +95,78 @@ export function ImageUpload({
         const result = await uploadProductImages(filesToUpload).unwrap();
 
         // Update each image with the uploaded URL
-        uploadingImages.forEach((img, index) => {
-          const uploadedImage = result.images[index];
-          if (uploadedImage) {
-            onChange((prev) =>
-              prev.map((item) => {
-                if (item.id === img.id) {
-                  // Clean up local preview URL
-                  if (item.url.startsWith("blob:")) {
-                    URL.revokeObjectURL(item.url);
-                  }
-                  return {
-                    ...item,
-                    url: uploadedImage.url,
-                    publicId: uploadedImage.public_id,
-                    isUploading: false,
-                    progress: 100,
-                    error: undefined,
-                  };
-                }
-                return item;
-              })
-            );
-          } else {
-            onChange((prev) =>
-              prev.map((item) =>
-                item.id === img.id
-                  ? {
-                      ...item,
-                      isUploading: false,
-                      error: "Upload failed: No response from server",
-                    }
-                  : item
-              )
-            );
-          }
-        });
-      } catch (error: any) {
-        // Handle upload error for all images
-        uploadingImages.forEach((img) => {
-          onChange((prev) =>
-            prev.map((item) => {
-              if (item.id === img.id) {
-                // Clean up local preview URL
-                if (item.url.startsWith("blob:")) {
-                  URL.revokeObjectURL(item.url);
-                }
-                return {
-                  ...item,
-                  isUploading: false,
-                  error: error?.data?.detail || error?.message || "Upload failed",
-                };
+        const updatedImages = newImages.map((item) => {
+          const uploadingImg = uploadingImages.find((img) => img.id === item.id);
+          if (uploadingImg) {
+            const index = uploadingImages.indexOf(uploadingImg);
+            const uploadedImage = result.images[index];
+            if (uploadedImage) {
+              // Clean up local preview URL
+              if (item.url.startsWith("blob:")) {
+                URL.revokeObjectURL(item.url);
               }
-              return item;
-            })
-          );
+              return {
+                ...item,
+                url: uploadedImage.url,
+                publicId: uploadedImage.public_id,
+                isUploading: false,
+                progress: 100,
+                error: undefined,
+              };
+            } else {
+              // Upload failed for this image
+              return {
+                ...item,
+                isUploading: false,
+                error: "Upload failed",
+              };
+            }
+          }
+          return item;
         });
+        
+        onChange(updatedImages);
+      } catch (error: any) {
+        // Handle upload errors
+        const errorImages = newImages.map((item) => {
+          const uploadingImg = uploadingImages.find((img) => img.id === item.id);
+          if (uploadingImg) {
+            // Clean up local preview URL
+            if (item.url.startsWith("blob:")) {
+              URL.revokeObjectURL(item.url);
+            }
+            return {
+              ...item,
+              isUploading: false,
+              error: error?.message || "Upload failed",
+            };
+          }
+          return item;
+        });
+        onChange(errorImages);
       }
-    },
-    [images, onChange, maxImages, disabled, isUploading, uploadProductImages]
-  );
+  }, [images, uploadProductImages, onChange]);
 
   // Cancel upload
   const cancelUpload = useCallback((imageId: string) => {
-    onChange((prev) => {
-      const updated = prev.map((item) => {
-        if (item.id === imageId && item.isUploading) {
-          // Clean up local preview URL
-          if (item.url.startsWith("blob:")) {
-            URL.revokeObjectURL(item.url);
-          }
-          return {
-            ...item,
-            isUploading: false,
-            error: "Upload cancelled",
-          };
+    const updated = images.map((item) => {
+      if (item.id === imageId && item.isUploading) {
+        // Clean up local preview URL
+        if (item.url.startsWith("blob:")) {
+          URL.revokeObjectURL(item.url);
         }
-        return item;
-      });
-      // Remove the cancelled image
-      return updated.filter((item) => item.id !== imageId || (!item.isUploading && !item.error));
+        return {
+          ...item,
+          isUploading: false,
+          error: "Upload cancelled",
+        };
+      }
+      return item;
     });
-  }, [onChange]);
+    // Remove the cancelled image
+    const filtered = updated.filter((item) => item.id !== imageId || (!item.isUploading && !item.error));
+    onChange(filtered);
+  }, [images, onChange]);
 
   // Handle drag events
   const handleDragEnter = (e: React.DragEvent) => {
@@ -259,40 +249,38 @@ export function ImageUpload({
       const uploadedImage = result.images[0];
 
       if (uploadedImage) {
-        onChange((prev) =>
-          prev.map((item) => {
-            if (item.id === id) {
-              // Clean up local preview URL
-              if (item.url.startsWith("blob:")) {
-                URL.revokeObjectURL(item.url);
-              }
-              return {
-                ...item,
-                url: uploadedImage.url,
-                publicId: uploadedImage.public_id,
-                isUploading: false,
-                progress: 100,
-                error: undefined,
-              };
+        const updated = images.map((item) => {
+          if (item.id === id) {
+            // Clean up local preview URL
+            if (item.url.startsWith("blob:")) {
+              URL.revokeObjectURL(item.url);
             }
-            return item;
-          })
-        );
+            return {
+              ...item,
+              url: uploadedImage.url,
+              publicId: uploadedImage.public_id,
+              isUploading: false,
+              progress: 100,
+              error: undefined,
+            };
+          }
+          return item;
+        });
+        onChange(updated);
       } else {
         throw new Error("No response from server");
       }
     } catch (error: any) {
-      onChange((prev) =>
-        prev.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                isUploading: false,
-                error: error?.data?.detail || error?.message || "Upload failed",
-              }
-            : item
-        )
+      const errorImages = images.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              isUploading: false,
+              error: error?.data?.detail || error?.message || "Upload failed",
+            }
+          : item
       );
+      onChange(errorImages);
     }
   };
 
