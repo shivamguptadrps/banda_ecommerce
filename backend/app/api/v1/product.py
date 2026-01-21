@@ -85,7 +85,7 @@ def product_to_public_response(product) -> ProductPublicResponse:
 # ============== Product Browsing ==============
 
 @router.get(
-    "/",
+    "",
     response_model=ProductListResponse,
     summary="Browse products",
     description="Browse all available products with filters.",
