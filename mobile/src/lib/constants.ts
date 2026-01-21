@@ -9,7 +9,7 @@ import API_URL from '@/config/api';
 export { API_URL };
 
 // App Info
-export const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME || "Banda";
+export const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME || "Banda Baazar";
 export const APP_DESCRIPTION = process.env.EXPO_PUBLIC_APP_DESCRIPTION || "Quick Commerce for Your City";
 
 // Auth

@@ -159,8 +159,9 @@ class OrderService:
     ) -> Optional[Order]:
         """Get order by ID with full details."""
         from app.models.payment import Payment
+        from app.models.product import Product, ProductImage
         query = self.db.query(Order).options(
-            joinedload(Order.items),
+            joinedload(Order.items).joinedload(OrderItem.product).joinedload(Product.images),
             joinedload(Order.payments).joinedload(Payment.logs),  # Eager load payment logs
             joinedload(Order.vendor),
             joinedload(Order.delivery_address),
@@ -178,8 +179,9 @@ class OrderService:
         buyer_id: Optional[uuid.UUID] = None,
     ) -> Optional[Order]:
         """Get order by order number."""
+        from app.models.product import Product, ProductImage
         query = self.db.query(Order).options(
-            joinedload(Order.items),
+            joinedload(Order.items).joinedload(OrderItem.product).joinedload(Product.images),
             joinedload(Order.vendor),
         ).filter(Order.order_number == order_number)
         
@@ -196,8 +198,9 @@ class OrderService:
         status_filter: Optional[OrderStatus] = None,
     ) -> Tuple[List[Order], int]:
         """Get paginated orders for a buyer."""
+        from app.models.product import Product, ProductImage
         query = self.db.query(Order).options(
-            joinedload(Order.items),
+            joinedload(Order.items).joinedload(OrderItem.product).joinedload(Product.images),
             joinedload(Order.vendor),
         ).filter(Order.buyer_id == buyer_id)
         

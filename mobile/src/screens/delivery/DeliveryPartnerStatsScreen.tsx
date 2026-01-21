@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useGetStatsQuery } from "@/store/api/deliveryPartnerApi";
 import { useAppDispatch } from "@/store/hooks";
 import { clearCredentials } from "@/store/slices/authSlice";
+import { storage } from "@/lib/storage";
 import { Spinner } from "@/components/ui/Spinner";
 import { formatPrice } from "@/lib/utils";
 
@@ -21,9 +22,26 @@ export default function DeliveryPartnerStatsScreen() {
   const dispatch = useAppDispatch();
   const { data: stats, isLoading, refetch, isFetching } = useGetStatsQuery();
 
-  const handleLogout = () => {
-    dispatch(clearCredentials());
-    navigation.replace("DeliveryPartnerLogin");
+  const handleLogout = async () => {
+    try {
+      await storage.clearAuth();
+      dispatch(clearCredentials());
+      // Reset navigation to login - clears all navigation state
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "DeliveryPartnerLogin" }],
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even on error, clear auth
+      await storage.clearAuth();
+      dispatch(clearCredentials());
+      try {
+        (navigation as any).navigate("DeliveryPartnerLogin");
+      } catch (navError) {
+        console.error("Navigation error:", navError);
+      }
+    }
   };
 
   if (isLoading) {

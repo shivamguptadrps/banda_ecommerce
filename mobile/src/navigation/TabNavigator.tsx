@@ -15,14 +15,15 @@ const Tab = createBottomTabNavigator();
 export function TabNavigator() {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   
-  // CRITICAL: Block delivery partners from accessing buyer tabs
-  // They should use DeliveryPartnerTabNavigator instead
+  // CRITICAL: Block delivery partners and vendors from accessing buyer tabs
+  // They should use their own tab navigators instead
   const isDeliveryPartner = user?.role === "delivery_partner";
+  const isVendor = user?.role === "vendor";
   
-  // Only fetch cart for buyers, skip for delivery partners and other roles
+  // Only fetch cart for buyers, skip for delivery partners and vendors
   const isBuyer = user?.role === "buyer" || (!user?.role && isAuthenticated);
   const { data: cart } = useGetCartQuery(undefined, {
-    skip: !isBuyer || isDeliveryPartner, // Skip cart query for delivery partners
+    skip: !isBuyer || isDeliveryPartner || isVendor, // Skip cart query for non-buyers
   });
   
   // Calculate cart count in useMemo to avoid setState during render
@@ -30,9 +31,9 @@ export function TabNavigator() {
     return cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
   }, [cart?.items]);
 
-  // If delivery partner somehow accesses this, return null
+  // If delivery partner or vendor somehow accesses this, return null
   // This should never happen if App.tsx routing is correct
-  if (isDeliveryPartner) {
+  if (isDeliveryPartner || isVendor) {
     return null;
   }
 

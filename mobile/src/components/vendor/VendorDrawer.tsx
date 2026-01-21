@@ -79,13 +79,21 @@ export function VendorDrawer({ isOpen, onClose }: VendorDrawerProps) {
       const refreshToken = await storage.getRefreshToken();
       await storage.clearAuth();
       dispatch(clearCredentials());
-      // Navigate to login
+      // Reset navigation to login - this clears all navigation state
       navigation.reset({
         index: 0,
         routes: [{ name: "Login" }],
       });
     } catch (error) {
       console.error("Logout error:", error);
+      // Even on error, clear auth and try to navigate
+      await storage.clearAuth();
+      dispatch(clearCredentials());
+      try {
+        (navigation as any).navigate("Login");
+      } catch (navError) {
+        console.error("Navigation error:", navError);
+      }
     }
   };
 

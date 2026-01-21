@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search, MapPin, ChevronDown, User } from "lucide-react";
+import { Search, MapPin, ChevronDown, User, Clock } from "lucide-react";
 
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { selectUser, selectIsAuthenticated, logout } from "@/store/slices/authSlice";
+import { selectCurrentLocation, selectETADisplay } from "@/store/slices/locationSlice";
 import { Button, Avatar } from "@/components/ui";
 import { CartButton } from "@/components/cart";
 import { SearchInput } from "@/components/search/SearchInput";
 import { BellIcon } from "@/components/notification";
+import { LocationPicker } from "@/components/location/LocationPicker";
 import { ROUTES, APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +25,16 @@ export function Header() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const currentLocation = useAppSelector(selectCurrentLocation);
+  const etaDisplay = useAppSelector(selectETADisplay);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only rendering auth-dependent UI after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -37,27 +49,63 @@ export function Header() {
           {/* Logo */}
           <Link
             href={ROUTES.HOME}
-            className="flex items-center gap-2.5 flex-shrink-0"
+            className="flex items-center flex-shrink-0"
           >
-            <div className="h-9 w-9 rounded-xl bg-[#0c831f] flex items-center justify-center shadow-md">
-              <span className="text-white text-lg font-bold">B</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-bold text-xl text-gray-900">{APP_NAME}</span>
-              <span className="block text-[10px] text-gray-500 -mt-0.5">groceries in minutes</span>
-            </div>
+            <Image
+              src="/images/logo.svg"
+              alt={APP_NAME}
+              width={160}
+              height={44}
+              className="h-11 sm:h-12 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Location Button */}
-          <button className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors group">
-            <MapPin className="h-4 w-4 text-[#0c831f]" />
-            <div className="text-left">
-              <span className="text-xs text-gray-500 block">Delivery in</span>
-              <span className="text-sm font-semibold text-gray-900 flex items-center gap-1">
-                10 minutes
-                <ChevronDown className="h-3 w-3 text-gray-400 group-hover:text-[#0c831f] transition-colors" />
-              </span>
+          <button 
+            onClick={() => setShowLocationPicker(true)}
+            className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-green-50 transition-colors group border border-transparent hover:border-green-200"
+          >
+            <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+              <MapPin className="h-4 w-4 text-[#0c831f]" />
             </div>
+            <div className="text-left max-w-[180px]">
+              {currentLocation ? (
+                <>
+                  <span className="text-xs text-gray-500 block flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    Delivery in {currentLocation.etaDisplay}
+                  </span>
+                  <span className="text-sm font-semibold text-gray-900 flex items-center gap-1 truncate">
+                    {currentLocation.shortAddress}
+                    <ChevronDown className="h-3 w-3 text-gray-400 group-hover:text-[#0c831f] transition-colors flex-shrink-0" />
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-xs text-gray-500 block">Deliver to</span>
+                  <span className="text-sm font-semibold text-[#0c831f] flex items-center gap-1">
+                    Select Location
+                    <ChevronDown className="h-3 w-3 text-[#0c831f] group-hover:text-[#0a6e1a] transition-colors" />
+                  </span>
+                </>
+              )}
+            </div>
+          </button>
+
+          {/* Mobile Location Button */}
+          <button 
+            onClick={() => setShowLocationPicker(true)}
+            className="md:hidden flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-green-50"
+          >
+            <MapPin className="h-4 w-4 text-[#0c831f]" />
+            {currentLocation ? (
+              <span className="text-xs font-medium text-gray-700 max-w-[100px] truncate">
+                {currentLocation.etaDisplay}
+              </span>
+            ) : (
+              <span className="text-xs font-medium text-[#0c831f]">Location</span>
+            )}
           </button>
 
           {/* Search Bar (Desktop) */}
@@ -75,14 +123,17 @@ export function Header() {
               <Search className="h-5 w-5" />
             </Link>
 
-            {/* Notifications - Only for buyers, vendors, and admins */}
-            {isAuthenticated && user?.role !== "delivery_partner" && <BellIcon />}
+            {/* Notifications - Only for buyers, vendors, and admins (render after mount to avoid hydration mismatch) */}
+            {mounted && isAuthenticated && user?.role !== "delivery_partner" && <BellIcon />}
 
-            {/* Cart Button - Only for buyers */}
-            {user?.role === "buyer" && <CartButton variant="icon" />}
+            {/* Cart Button - Only for buyers (render after mount to avoid hydration mismatch) */}
+            {mounted && user?.role === "buyer" && <CartButton variant="icon" />}
 
-            {/* User Menu */}
-            {isAuthenticated ? (
+            {/* User Menu (render after mount to avoid hydration mismatch) */}
+            {!mounted ? (
+              // Placeholder during SSR to prevent hydration mismatch
+              <div className="w-20 h-9" />
+            ) : isAuthenticated ? (
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -194,6 +245,12 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Location Picker Modal */}
+      <LocationPicker 
+        isOpen={showLocationPicker} 
+        onClose={() => setShowLocationPicker(false)} 
+      />
     </header>
   );
 }

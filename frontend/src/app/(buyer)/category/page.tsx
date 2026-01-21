@@ -1,233 +1,191 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Grid3X3, List, ChevronRight } from "lucide-react";
+import { Search, Grid3X3, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { Card, Input } from "@/components/ui";
 import { Spinner } from "@/components/ui/Spinner";
 import { useGetCategoryTreeQuery } from "@/store/api/categoryApi";
 import { CategoryTreeNode } from "@/types";
 import { cn } from "@/lib/utils";
 
 /**
- * Category icons/emojis mapping (will be replaced with actual images)
+ * Subcategory Card Component - 4 column grid item (matching React Native)
  */
-const categoryIcons: Record<string, string> = {
-  "fruits-vegetables": "🥗",
-  "dairy-eggs": "🥛",
-  "meat-seafood": "🍖",
-  "bakery": "🍞",
-  "beverages": "🥤",
-  "snacks": "🍿",
-  "household": "🧹",
-  "personal-care": "🧴",
-  "default": "📦",
-};
-
-const categoryColors: Record<string, string> = {
-  "fruits-vegetables": "bg-green-100 hover:bg-green-200",
-  "dairy-eggs": "bg-blue-100 hover:bg-blue-200",
-  "meat-seafood": "bg-red-100 hover:bg-red-200",
-  "bakery": "bg-amber-100 hover:bg-amber-200",
-  "beverages": "bg-purple-100 hover:bg-purple-200",
-  "snacks": "bg-orange-100 hover:bg-orange-200",
-  "household": "bg-cyan-100 hover:bg-cyan-200",
-  "personal-care": "bg-pink-100 hover:bg-pink-200",
-  "default": "bg-gray-100 hover:bg-gray-200",
-};
-
-/**
- * Category Card Component
- */
-function CategoryCard({ category, index }: { category: CategoryTreeNode; index: number }) {
-  const icon = categoryIcons[category.slug] || categoryIcons.default;
-  const color = categoryColors[category.slug] || categoryColors.default;
-  const hasChildren = category.children && category.children.length > 0;
+function SubcategoryCard({ category, index }: { category: CategoryTreeNode; index: number }) {
   const hasImage = category.image_url && category.image_url.trim() !== "";
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: index * 0.03 }}
     >
       <Link href={`/category/${category.slug}`}>
-        <Card
-          padding="none"
-          hoverable
-          className="group overflow-hidden"
-        >
-          {/* Icon/Image */}
-          <div className={cn("h-24 sm:h-32 flex items-center justify-center transition-colors relative overflow-hidden", !hasImage && color)}>
+        <div className="flex flex-col items-center group cursor-pointer">
+          {/* Image Container - Responsive and wider */}
+          <div className="w-full aspect-square max-w-[100px] rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm mb-2 group-hover:shadow-lg group-hover:border-[#0c831f]/30 transition-all mx-auto">
             {hasImage ? (
               <Image
                 src={category.image_url!}
                 alt={category.name}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                onError={(e) => {
-                  // Fallback to icon if image fails to load
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = "none";
-                  const fallback = target.parentElement?.querySelector(".fallback-icon");
-                  if (fallback) {
-                    (fallback as HTMLElement).style.display = "flex";
-                  }
-                }}
+                width={100}
+                height={100}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-            ) : null}
-            <span className={cn("text-4xl sm:text-5xl group-hover:scale-110 transition-transform", hasImage && "hidden fallback-icon")}>
-              {icon}
-            </span>
-          </div>
-
-          {/* Content */}
-          <div className="p-3 sm:p-4">
-            <h3 className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-1 group-hover:text-primary transition-colors">
-              {category.name}
-            </h3>
-            {hasChildren && (
-              <p className="text-xs text-gray-500 mt-1">
-                {category.children.length} subcategories
-              </p>
+            ) : (
+              <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                <Grid3X3 className="h-8 w-8 text-gray-400" />
+              </div>
             )}
           </div>
-
-          {/* Arrow indicator */}
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <ChevronRight className="h-4 w-4 text-gray-400" />
-          </div>
-        </Card>
+          {/* Name */}
+          <p className="text-xs sm:text-sm font-medium text-gray-800 text-center leading-tight line-clamp-2 w-full">
+            {category.name}
+          </p>
+        </div>
       </Link>
     </motion.div>
   );
 }
 
 /**
- * Categories Page
+ * Category Section Component - Top category with subcategories below (matching React Native)
+ */
+function CategorySection({ 
+  section, 
+  index 
+}: { 
+  section: { topCategory: CategoryTreeNode; subcategories: CategoryTreeNode[] };
+  index: number;
+}) {
+  const { topCategory, subcategories } = section;
+
+  // Only show sections that have subcategories
+  if (subcategories.length === 0) return null;
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="mb-8"
+    >
+      {/* Section Header */}
+      <div className="flex items-center justify-between mb-4">
+        <Link href={`/category/${topCategory.slug}`}>
+          <h2 className="text-lg font-bold text-gray-900 hover:text-[#0c831f] transition-colors">
+            {topCategory.name}
+          </h2>
+        </Link>
+        <Link
+          href={`/category/${topCategory.slug}`}
+          className="text-sm font-semibold text-[#0c831f] hover:underline flex items-center gap-1"
+        >
+          See All
+          <ChevronRight className="h-4 w-4" />
+        </Link>
+      </div>
+
+      {/* Subcategories Grid - Responsive columns */}
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-5">
+        {subcategories.map((subcategory, idx) => (
+          <SubcategoryCard key={subcategory.id} category={subcategory} index={idx} />
+        ))}
+      </div>
+    </motion.section>
+  );
+}
+
+/**
+ * Categories Page - Matching React Native CategoriesScreen
+ * Shows top-level categories as section headers with subcategories below
  */
 export default function CategoriesPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { data: categories, isLoading, error } = useGetCategoryTreeQuery();
 
-  // Filter categories based on search
-  const filteredCategories = categories?.filter((category) =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Organize categories into sections (top-level categories with their children)
+  const categorySections = useMemo(() => {
+    if (!categories) return [];
+    return categories.map((topCategory) => ({
+      topCategory,
+      subcategories: topCategory.children || [],
+    }));
+  }, [categories]);
+
+  // Filter sections based on search
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return categorySections;
+    
+    const query = searchQuery.toLowerCase();
+    return categorySections.map(section => ({
+      ...section,
+      subcategories: section.subcategories.filter(sub => 
+        sub.name.toLowerCase().includes(query)
+      )
+    })).filter(section => 
+      section.topCategory.name.toLowerCase().includes(query) || 
+      section.subcategories.length > 0
+    );
+  }, [categorySections, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-white">
+      {/* Search Header - Matching React Native */}
       <div className="bg-white border-b border-gray-100 sticky top-16 z-20">
-        <div className="container-app py-4">
-          {/* Title & View Toggle */}
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-              All Categories
-            </h1>
-            
-            {/* View Toggle (Desktop) */}
-            <div className="hidden sm:flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={cn(
-                  "p-2 rounded-md transition-colors",
-                  viewMode === "grid"
-                    ? "bg-white shadow-sm text-primary"
-                    : "text-gray-500 hover:text-gray-700"
-                )}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={cn(
-                  "p-2 rounded-md transition-colors",
-                  viewMode === "list"
-                    ? "bg-white shadow-sm text-primary"
-                    : "text-gray-500 hover:text-gray-700"
-                )}
-              >
-                <List className="h-4 w-4" />
-              </button>
+        <div className="container-app py-3 px-4">
+          <div className="flex items-center gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#0c831f] focus:ring-1 focus:ring-[#0c831f] transition-colors"
+              />
             </div>
-          </div>
-
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            />
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="container-app py-6">
+      <div className="container-app py-6 px-4">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <Spinner size="lg" />
           </div>
         ) : error ? (
           <div className="text-center py-20">
+            <Grid3X3 className="h-12 w-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">Failed to load categories</p>
           </div>
-        ) : filteredCategories && filteredCategories.length > 0 ? (
-          <div
-            className={cn(
-              viewMode === "grid"
-                ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
-                : "space-y-3"
-            )}
-          >
-            {filteredCategories.map((category, index) => (
-              viewMode === "grid" ? (
-                <CategoryCard key={category.id} category={category} index={index} />
-              ) : (
-                <Link key={category.id} href={`/category/${category.slug}`}>
-                  <Card hoverable className="flex items-center gap-4">
-                    <div className={cn(
-                      "h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0",
-                      categoryColors[category.slug] || categoryColors.default
-                    )}>
-                      <span className="text-2xl">
-                        {categoryIcons[category.slug] || categoryIcons.default}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 truncate">
-                        {category.name}
-                      </h3>
-                      {category.children.length > 0 && (
-                        <p className="text-sm text-gray-500">
-                          {category.children.length} subcategories
-                        </p>
-                      )}
-                    </div>
-                    <ChevronRight className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                  </Card>
-                </Link>
-              )
+        ) : filteredSections.length > 0 ? (
+          <div>
+            {filteredSections.map((section, index) => (
+              <CategorySection key={section.topCategory.id} section={section} index={index} />
             ))}
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">🔍</div>
-            <p className="text-gray-500">No categories found</p>
+            <Grid3X3 className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 font-medium">No categories found</p>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="mt-3 text-sm text-[#0c831f] hover:underline"
+              >
+                Clear search
+              </button>
+            )}
           </div>
         )}
       </div>
     </div>
   );
 }
-

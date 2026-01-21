@@ -136,7 +136,12 @@ export const deliveryPartnerApi = createApi({
         const params = new URLSearchParams();
         params.append("page", page.toString());
         params.append("size", size.toString());
-        if (status) params.append("status", status);
+        // Backend only accepts single status enum, not comma-separated values
+        // If multiple statuses are passed, use only the first one
+        if (status) {
+          const singleStatus = status.includes(",") ? status.split(",")[0].trim() : status;
+          params.append("status", singleStatus);
+        }
         return `/delivery-partner/orders?${params.toString()}`;
       },
       providesTags: ["DeliveryPartnerOrder"],

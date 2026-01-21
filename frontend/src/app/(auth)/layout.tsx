@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { APP_NAME } from "@/lib/constants";
 
 /**
@@ -11,17 +12,18 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-emerald-50">
       {/* Header */}
-      <header className="p-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 font-bold text-xl text-primary"
-        >
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-white text-sm font-bold">B</span>
-          </div>
-          {APP_NAME}
+      <header className="p-6">
+        <Link href="/" className="inline-block">
+          <Image
+            src="/images/logo.svg"
+            alt={APP_NAME}
+            width={180}
+            height={50}
+            className="h-12 sm:h-14 w-auto object-contain"
+            priority
+          />
         </Link>
       </header>
 

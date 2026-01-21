@@ -70,6 +70,48 @@ export const authApi = createApi({
         body: data,
       }),
     }),
+
+    // Send OTP
+    sendOTP: builder.mutation<
+      { message: string; expires_in: number; mobile_number: string },
+      { mobile_number: string; purpose?: string }
+    >({
+      query: (data) => ({
+        url: "/auth/send-otp",
+        method: "POST",
+        body: { mobile_number: data.mobile_number, purpose: data.purpose || "login" },
+      }),
+    }),
+
+    // Verify OTP
+    verifyOTP: builder.mutation<AuthTokens & { user: User }, { mobile_number: string; otp: string; purpose?: string }>({
+      query: (data) => ({
+        url: "/auth/verify-otp",
+        method: "POST",
+        body: { mobile_number: data.mobile_number, otp: data.otp, purpose: data.purpose || "login" },
+      }),
+    }),
+
+    // Register with password (after OTP verification)
+    registerWithPassword: builder.mutation<
+      AuthTokens & { user: User },
+      { mobile_number: string; username: string; password: string; name: string; email?: string }
+    >({
+      query: (data) => ({
+        url: "/auth/register-with-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Mobile login (mobile + password)
+    mobileLogin: builder.mutation<AuthTokens & { user: User }, { mobile_number: string; password: string }>({
+      query: (data) => ({
+        url: "/auth/mobile-login",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -82,5 +124,9 @@ export const {
   useLazyGetCurrentUserQuery,
   useUpdateCurrentUserMutation,
   useChangePasswordMutation,
+  useSendOTPMutation,
+  useVerifyOTPMutation,
+  useRegisterWithPasswordMutation,
+  useMobileLoginMutation,
 } = authApi;
 

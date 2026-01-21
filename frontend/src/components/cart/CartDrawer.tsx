@@ -30,7 +30,19 @@ const CartItemRow = React.forwardRef<
     onRemove: () => void;
   }
 >(({ item, onUpdateQuantity, onRemove }, ref) => {
-  const primaryImage = item.product.images?.find((img: any) => img.is_primary) || item.product.images?.[0];
+  // Get image URL - check multiple possible sources
+  const getProductImage = () => {
+    // Check direct primary_image string
+    if (item.product.primary_image) return item.product.primary_image;
+    // Check images array
+    if (item.product.images?.length) {
+      const primaryImg = item.product.images.find((img: any) => img.is_primary) || item.product.images[0];
+      return primaryImg?.url || primaryImg?.image_url || null;
+    }
+    return null;
+  };
+  
+  const imageUrl = getProductImage();
   const itemTotal = item.sellUnit.price * item.quantity;
 
   return (
@@ -43,9 +55,9 @@ const CartItemRow = React.forwardRef<
     >
       {/* Image */}
       <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
-        {primaryImage ? (
+        {imageUrl ? (
           <img
-            src={primaryImage.url}
+            src={imageUrl}
             alt={item.product.name}
             className="w-full h-full object-contain"
           />

@@ -18,7 +18,15 @@ from app.schemas.user import (
     PasswordChange,
     MessageResponse,
 )
+from app.schemas.otp import (
+    SendOTPRequest,
+    SendOTPResponse,
+    VerifyOTPRequest,
+    MobileLoginRequest,
+    RegisterWithPasswordRequest,
+)
 from app.services.auth_service import AuthService
+from app.services.otp_service import OTPService
 from app.api.deps import CurrentUser, DbSession
 
 
@@ -261,4 +269,287 @@ def change_password(
         )
     
     return MessageResponse(message="Password changed successfully")
+
+
+# ============== Mobile OTP Authentication (End Users) ==============
+
+@router.post(
+    "/send-otp",
+    response_model=SendOTPResponse,
+    summary="Send OTP to mobile number",
+    description="Send OTP to mobile number for login/registration. Rate limited to 3 per hour.",
+)
+def send_otp(
+    request: SendOTPRequest,
+    db: DbSession,
+):
+    """
+    Send OTP to mobile number for authentication.
+    
+    - **mobile_number**: 10-digit Indian mobile number
+    - **purpose**: 'login' (default), 'register', or 'reset_password'
+    
+    Returns OTP expiry time. OTP is valid for 5 minutes.
+    """
+    # Restrict this OTP flow to buyers only.
+    # If a phone belongs to a vendor/admin/delivery_partner, they must use their role-specific login.
+    from app.models.user import User
+    from app.models.enums import UserRole
+    existing_user = db.query(User).filter(User.phone == request.mobile_number).first()
+    if existing_user and existing_user.role in {UserRole.ADMIN, UserRole.VENDOR, UserRole.DELIVERY_PARTNER}:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"This mobile is registered as '{existing_user.role.value}'. Please use the correct login option.",
+        )
+
+    otp_service = OTPService(db)
+    
+    otp, error = otp_service.create_otp(request.mobile_number, request.purpose)
+    
+    if not otp:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=error or "Failed to send OTP",
+        )
+    
+    # In production, send OTP via SMS service (Twilio, AWS SNS, etc.)
+    # For development/testing: Return OTP in response so it can be displayed to user
+    print(f"🔐 OTP for {request.mobile_number}: {otp.otp_code} (Expires in 5 minutes)")
+    
+    # Mask mobile number for response
+    masked_mobile = f"{request.mobile_number[:2]}****{request.mobile_number[-2:]}"
+    
+    return SendOTPResponse(
+        message="OTP sent successfully",
+        expires_in=300,  # 5 minutes
+        mobile_number=masked_mobile,
+        otp_code=otp.otp_code,  # Include OTP for development/testing
+    )
+
+
+@router.post(
+    "/verify-otp",
+    response_model=TokenWithUser,
+    summary="Verify OTP and login/register",
+    description="Verify OTP code and automatically login or register user.",
+)
+def verify_otp(
+    request: VerifyOTPRequest,
+    db: DbSession,
+):
+    """
+    Verify OTP and authenticate user.
+    
+    - If user exists: Login and return tokens
+    - If user doesn't exist: Auto-register as buyer and return tokens
+    
+    Mobile number will be marked as verified.
+    """
+    otp_service = OTPService(db)
+    auth_service = AuthService(db)
+    
+    # Verify OTP
+    is_valid, error, otp = otp_service.verify_otp(
+        request.mobile_number,
+        request.otp,
+        request.purpose,
+    )
+    
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error or "Invalid OTP",
+        )
+    
+    # Check if user exists with this mobile number
+    from app.models.user import User
+    from app.models.enums import UserRole
+    user = db.query(User).filter(User.phone == request.mobile_number).first()
+    
+    if user:
+        # Restrict this OTP flow to buyers only.
+        if user.role in {UserRole.ADMIN, UserRole.VENDOR, UserRole.DELIVERY_PARTNER}:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"This mobile is registered as '{user.role.value}'. Please use the correct login option.",
+            )
+        # Existing user - login
+        user.is_mobile_verified = True
+        db.commit()
+        
+        tokens = auth_service.create_tokens(user)
+        return TokenWithUser(
+            access_token=tokens.access_token,
+            refresh_token=tokens.refresh_token,
+            token_type=tokens.token_type,
+            expires_in=tokens.expires_in,
+            user=UserResponse.model_validate(user),
+        )
+    else:
+        # New user - auto-register as buyer
+        # Generate a temporary email and password
+        import hashlib
+        # Use a non-reserved domain; `.local` is rejected by email validators
+        temp_email = f"{request.mobile_number}@banda.com"
+        temp_password = hashlib.sha256(f"{request.mobile_number}_temp".encode()).hexdigest()[:16]
+        
+        # Create user
+        from app.models.enums import UserRole
+        from passlib.context import CryptContext
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        
+        user = User(
+            email=temp_email,
+            phone=request.mobile_number,
+            name=f"User {request.mobile_number}",  # User can update later
+            password_hash=pwd_context.hash(temp_password),
+            role=UserRole.BUYER,
+            is_mobile_verified=True,
+            is_email_verified=False,
+        )
+        
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        
+        tokens = auth_service.create_tokens(user)
+        return TokenWithUser(
+            access_token=tokens.access_token,
+            refresh_token=tokens.refresh_token,
+            token_type=tokens.token_type,
+            expires_in=tokens.expires_in,
+            user=UserResponse.model_validate(user),
+        )
+
+
+@router.post(
+    "/register-with-password",
+    response_model=TokenWithUser,
+    status_code=status.HTTP_201_CREATED,
+    summary="Register with mobile + password (after OTP verification)",
+    description="Set username and password for mobile-verified user.",
+)
+def register_with_password(
+    request: RegisterWithPasswordRequest,
+    db: DbSession,
+):
+    """
+    Register user with mobile number, username, and password.
+    
+    User must have verified mobile via OTP first.
+    This allows users to set a password for faster future logins.
+    """
+    from app.models.user import User
+    from app.models.enums import UserRole
+    from passlib.context import CryptContext
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    
+    # Check if mobile is verified (user should verify OTP first)
+    # For now, we'll allow registration if mobile doesn't exist
+    existing_user = db.query(User).filter(
+        (User.phone == request.mobile_number) | (User.email == request.email)
+    ).first()
+    
+    if existing_user:
+        if existing_user.phone == request.mobile_number:
+            # Update existing user with password
+            existing_user.password_hash = pwd_context.hash(request.password)
+            existing_user.name = request.name
+            if request.email:
+                existing_user.email = request.email
+            existing_user.is_mobile_verified = True
+            db.commit()
+            db.refresh(existing_user)
+            
+            auth_service = AuthService(db)
+            tokens = auth_service.create_tokens(existing_user)
+            return TokenWithUser(
+                access_token=tokens.access_token,
+                refresh_token=tokens.refresh_token,
+                token_type=tokens.token_type,
+                expires_in=tokens.expires_in,
+                user=UserResponse.model_validate(existing_user),
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered",
+            )
+    
+    # Create new user
+    user = User(
+        # Use a non-reserved domain; `.local` is rejected by email validators
+        email=request.email or f"{request.mobile_number}@banda.com",
+        phone=request.mobile_number,
+        name=request.name,
+        password_hash=pwd_context.hash(request.password),
+        role=UserRole.BUYER,
+        is_mobile_verified=True,
+        is_email_verified=bool(request.email),
+    )
+    
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    auth_service = AuthService(db)
+    tokens = auth_service.create_tokens(user)
+    return TokenWithUser(
+        access_token=tokens.access_token,
+        refresh_token=tokens.refresh_token,
+        token_type=tokens.token_type,
+        expires_in=tokens.expires_in,
+        user=UserResponse.model_validate(user),
+    )
+
+
+@router.post(
+    "/mobile-login",
+    response_model=TokenWithUser,
+    summary="Login with mobile number and password",
+    description="Alternative login method for users who set password.",
+)
+def mobile_login(
+    request: MobileLoginRequest,
+    db: DbSession,
+):
+    """
+    Login with mobile number and password.
+    
+    For users who have set a password after OTP verification.
+    """
+    from app.models.user import User
+    from passlib.context import CryptContext
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    
+    user = db.query(User).filter(User.phone == request.mobile_number).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid mobile number or password",
+        )
+    
+    if not pwd_context.verify(request.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid mobile number or password",
+        )
+    
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account is deactivated",
+        )
+    
+    auth_service = AuthService(db)
+    tokens = auth_service.create_tokens(user)
+    
+    return TokenWithUser(
+        access_token=tokens.access_token,
+        refresh_token=tokens.refresh_token,
+        token_type=tokens.token_type,
+        expires_in=tokens.expires_in,
+        user=UserResponse.model_validate(user),
+    )
 

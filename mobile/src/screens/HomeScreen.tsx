@@ -21,6 +21,7 @@ import { useAppSelector } from "@/store/hooks";
 import { SearchBar } from "@/components/home/SearchBar";
 import { LocationPicker } from "@/components/home/LocationPicker";
 import { BannerCarousel } from "@/components/home/BannerCarousel";
+import { Logo } from "@/components/ui/Logo";
 import { ProductCard } from "@/components/product/ProductCard";
 import { CategoryDrawer } from "@/components/navigation/CategoryDrawer";
 import { FloatingCartIcon } from "@/components/navigation/FloatingCartIcon";
@@ -82,11 +83,30 @@ export default function HomeScreen() {
     useGetCategoryTreeQuery();
 
   // Fetch featured products
-  const { data: featuredProductsData } = useGetProductsQuery({
+  const { 
+    data: featuredProductsData, 
+    isLoading: featuredLoading,
+    isError: featuredError,
+    error: featuredErrorData,
+    refetch: refetchFeatured
+  } = useGetProductsQuery({
     page: 1,
     size: 10,
     filters: { in_stock: true },
   });
+
+  // Log errors for debugging
+  useEffect(() => {
+    if (featuredError) {
+      console.error('❌ Featured Products Error:', featuredErrorData);
+    }
+    if (featuredProductsData) {
+      console.log('✅ Featured Products Loaded:', {
+        total: featuredProductsData.total,
+        items: featuredProductsData.items?.length || 0
+      });
+    }
+  }, [featuredError, featuredErrorData, featuredProductsData]);
 
   const [addToCart, { isLoading: isAddingToCart }] = useAddToCartMutation();
 
@@ -297,8 +317,11 @@ export default function HomeScreen() {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <View style={styles.container}>
-        {/* Header with Location */}
+        {/* Header with Logo and Location */}
         <View style={styles.header}>
+          <View style={styles.logoContainer}>
+            <Logo width={140} height={38} />
+          </View>
           <LocationPicker onPress={handleLocationPress} />
         </View>
 
@@ -511,6 +534,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E5E7EB",
     paddingTop: StatusBar.currentHeight || 0,
     shadowColor: "#000",
+  },
+  logoContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
     shadowOffset: {
       width: 0,
       height: 1,

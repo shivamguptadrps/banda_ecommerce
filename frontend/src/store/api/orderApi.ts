@@ -23,6 +23,8 @@ export interface OrderItem {
   price_per_unit: number;
   total_price: number;
   stock_quantity_used: number;
+  // Product image for display
+  product_image?: string;
   // Return policy snapshot
   return_eligible?: boolean;
   return_window_days?: number;

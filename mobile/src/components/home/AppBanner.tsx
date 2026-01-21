@@ -26,7 +26,7 @@ export const AppBanner: React.FC<AppBannerProps> = ({
         {/* Logo */}
         <View style={styles.logoContainer}>
           <View style={styles.logoRow}>
-            <Text style={styles.logoText}>Banda</Text>
+            <Text style={styles.logoText}>Banda Baazar</Text>
             <View style={styles.logoAccent}>
               <Text style={styles.logoAccentText}>Bazar</Text>
             </View>

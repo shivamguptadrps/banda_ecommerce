@@ -89,6 +89,14 @@ class Settings(BaseSettings):
     # Pagination
     default_page_size: int = 20
     max_page_size: int = 100
+    
+    # Warehouse/Delivery Settings
+    warehouse_latitude: float = 28.6289  # Default: Ghaziabad
+    warehouse_longitude: float = 77.4422
+    warehouse_name: str = "Banda Bazaar Warehouse"
+    max_delivery_radius_km: float = 10.0  # Maximum delivery distance (can be overridden via MAX_DELIVERY_RADIUS_KM env var)
+    base_prep_time_minutes: int = 5  # Average order preparation time
+    delivery_speed_km_per_min: float = 0.5  # ~30 km/h average speed
 
 
 @lru_cache()

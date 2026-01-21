@@ -38,30 +38,16 @@ const envVars = getEnvVars();
 let apiUrl = envVars.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_API_URL;
 
 // Validate API URL format
+// Note: Console output removed to prevent Gradle build errors
 if (!apiUrl) {
-  console.error('[app.config.js] ❌ EXPO_PUBLIC_API_URL is missing from .env file!');
-  console.error('[app.config.js] Please create/update .env with: EXPO_PUBLIC_API_URL=http://YOUR_IP:8000/api/v1');
-  // In development, use a warning but don't fail
   // In production, this should fail
   if (process.env.NODE_ENV === 'production') {
     throw new Error('EXPO_PUBLIC_API_URL is required in production');
   }
-  // For development, log warning but continue (will fail at runtime in constants.ts)
+  // For development, continue (will fail at runtime in constants.ts)
   apiUrl = 'MISSING_API_URL';
 } else if (!apiUrl.startsWith('http://') && !apiUrl.startsWith('https://')) {
-  console.error('[app.config.js] ❌ Invalid API URL format:', apiUrl);
-  console.error('[app.config.js] Expected format: http://192.168.0.116:8000/api/v1');
   apiUrl = 'INVALID_API_URL';
-}
-
-// Log for debugging (only in development)
-if (process.env.NODE_ENV !== 'production') {
-  if (apiUrl === 'MISSING_API_URL' || apiUrl === 'INVALID_API_URL') {
-    console.error('[app.config.js] ⚠️  API URL is not properly configured!');
-  } else {
-    console.log('[app.config.js] ✅ API URL configured:', apiUrl);
-  }
-  console.log('[app.config.js] .env file content:', envVars.EXPO_PUBLIC_API_URL || 'not found');
 }
 
 module.exports = {
@@ -86,19 +72,28 @@ module.exports = {
       adaptiveIcon: {
         backgroundColor: "#7B2D8E"
       },
-      package: "com.banda.mobile"
+      package: "com.banda.mobile",
+      versionCode: 1,
+      permissions: [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     web: {},
     scheme: "banda",
     extra: {
       eas: {
-        projectId: "your-project-id"
+        projectId: "ec34fc9b-e2e3-4bd6-af66-76754965c9fc"
       },
       // Make API URL available via Constants.expoConfig.extra.apiUrl
       apiUrl: apiUrl,
     },
     plugins: [
-      "expo-font"
+      "expo-font",
+      "expo-dev-client"
     ]
   }
 };

@@ -31,7 +31,15 @@ import { Address } from "@/types/address";
 import { OrderCreate } from "@/types/order";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
-import RazorpayCheckout from "react-native-razorpay";
+// Temporarily disable Razorpay for build compatibility
+// import RazorpayCheckout from "react-native-razorpay";
+let RazorpayCheckout: any = null;
+try {
+  RazorpayCheckout = require("react-native-razorpay").default;
+} catch (e) {
+  // Razorpay not available
+  console.warn("Razorpay not available:", e);
+}
 
 type CheckoutStep = "address" | "payment" | "review";
 
@@ -285,6 +293,16 @@ export default function CheckoutScreen() {
     amount: number,
     orderNumber: string
   ) => {
+    // Check if Razorpay is available
+    if (!RazorpayCheckout) {
+      Alert.alert(
+        "Online Payment Unavailable",
+        "Online payment is currently unavailable. Please use Cash on Delivery (COD) for now.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
     try {
       const paymentOrder = await createPaymentOrder({
         order_id: orderId,
@@ -302,7 +320,7 @@ export default function CheckoutScreen() {
         currency: "INR",
         key: paymentOrder.key_id,
         amount: Math.round(amount * 100),
-        name: "Banda E-Commerce",
+        name: "Banda Baazar",
         order_id: paymentOrder.razorpay_order_id,
         prefill: {
           email: "",
@@ -492,7 +510,8 @@ export default function CheckoutScreen() {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* Online payment temporarily disabled for build compatibility */}
+        {/* <TouchableOpacity
           style={[
             styles.paymentOption,
             paymentMethod === "online" && styles.paymentOptionSelected,
@@ -517,7 +536,7 @@ export default function CheckoutScreen() {
               <Ionicons name="checkmark-circle" size={18} color="#22C55E" />
             </View>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -582,7 +601,7 @@ export default function CheckoutScreen() {
         <Text style={styles.reviewSectionTitle}>Payment Method</Text>
         <View style={styles.reviewCard}>
           <Text style={styles.reviewText}>
-            {paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}
+            Cash on Delivery
           </Text>
         </View>
       </View>

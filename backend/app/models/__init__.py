@@ -4,6 +4,7 @@ All database models are imported here for Alembic to discover
 """
 
 from app.models.user import User, RefreshToken
+from app.models.otp import OTP
 from app.models.vendor import Vendor
 from app.models.delivery_partner import DeliveryPartner
 from app.models.delivery_history import DeliveryHistory
@@ -40,6 +41,7 @@ __all__ = [
     # User models
     "User",
     "RefreshToken",
+    "OTP",
     # Vendor models
     "Vendor",
     # Delivery partner models

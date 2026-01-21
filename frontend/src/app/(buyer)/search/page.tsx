@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,9 +17,9 @@ import {
 import { useGetCategoryTreeQuery } from "@/store/api/categoryApi";
 
 /**
- * Search Page
+ * Search Page Content (uses useSearchParams)
  */
-export default function SearchPage() {
+function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
@@ -380,3 +380,19 @@ export default function SearchPage() {
   );
 }
 
+/**
+ * Search Page - Wrapped in Suspense for useSearchParams
+ */
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <Spinner size="lg" />
+        </div>
+      }
+    >
+      <SearchPageContent />
+    </Suspense>
+  );
+}

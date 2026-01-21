@@ -46,9 +46,10 @@ export default function OrdersScreen() {
   const [selectedRelatedProductForVariant, setSelectedRelatedProductForVariant] = useState<any>(null);
   const [addToCart] = useAddToCartMutation();
 
-  // Skip query for delivery partners - they should use DeliveryPartnerOrdersScreen
+  // Skip query for delivery partners and vendors - they should use their own screens
   const isBuyer = user?.role === "buyer" || (!user?.role && isAuthenticated);
   const isDeliveryPartner = user?.role === "delivery_partner";
+  const isVendor = user?.role === "vendor";
 
   const {
     data: ordersData,
@@ -63,7 +64,7 @@ export default function OrdersScreen() {
       status: selectedFilter !== "all" ? selectedFilter : undefined,
     },
     {
-      skip: !isBuyer || isDeliveryPartner, // Skip for delivery partners
+      skip: !isBuyer || isDeliveryPartner || isVendor, // Skip for non-buyers
     }
   );
 
@@ -86,6 +87,23 @@ export default function OrdersScreen() {
     setPage(1);
     refetch();
   };
+
+  // Show error if wrong role tries to access this screen
+  if (isDeliveryPartner || isVendor) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="alert-circle-outline" size={48} color="#DC2626" />
+          <Text style={styles.emptyTitle}>Wrong Account Type</Text>
+          <Text style={styles.emptyText}>
+            {isDeliveryPartner 
+              ? "Delivery partners should use the Delivery Partner section"
+              : "Vendors should use the Vendor Dashboard"}
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

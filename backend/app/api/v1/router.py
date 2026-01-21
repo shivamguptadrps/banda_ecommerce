@@ -32,6 +32,7 @@ from app.api.v1 import (
     search,
     vendor_analytics,
     admin_analytics,
+    location,
 )
 # Import return module dynamically since 'return' is a Python keyword
 return_api = importlib.import_module("app.api.v1.return")
@@ -168,6 +169,11 @@ api_router.include_router(
     admin_analytics.router,
     prefix="/admin/analytics",
     tags=["Admin Analytics"],
+)
+
+api_router.include_router(
+    location.router,
+    tags=["Location & Serviceability"],
 )
 
 # Future route modules will be added here:

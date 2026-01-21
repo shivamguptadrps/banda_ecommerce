@@ -7,11 +7,12 @@ export type UserRole = "admin" | "vendor" | "buyer" | "delivery_partner";
 export interface User {
   id: string;
   email: string;
-  phone: string;
+  phone: string | null;
   name: string;
   role: UserRole;
   is_active: boolean;
-  is_verified?: boolean;
+  is_email_verified: boolean;
+  is_mobile_verified: boolean;
   created_at: string;
   updated_at?: string;
 }

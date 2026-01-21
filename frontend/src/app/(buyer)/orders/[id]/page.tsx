@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
@@ -22,6 +22,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 import { Button, Card } from "@/components/ui";
+import { Spinner } from "@/components/ui/Spinner";
 import { useGetOrderQuery } from "@/store/api/orderApi";
 import { formatPrice, formatDate, formatDateTime, cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/constants";
@@ -167,9 +168,9 @@ function OrderTrackingTimeline({ order }: { order: any }) {
 }
 
 /**
- * Order Success/Error Page
+ * Order Detail Page Content (uses useSearchParams)
  */
-export default function OrderDetailPage({
+function OrderDetailPageContent({
   params,
 }: {
   params: Promise<{ id: string }> | { id: string };
@@ -378,22 +379,22 @@ export default function OrderDetailPage({
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h2>
             <div className="space-y-4">
-              {order.items.map((item) => {
+              {order.items.map((item: any) => {
                 return (
-                  <div key={item.id} className="flex gap-4 pb-4 border-b border-gray-100 last:border-0">
-                    <div className="w-20 h-20 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <Package className="h-8 w-8" />
-                      </div>
+                  <div key={item.id} className="flex gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                      {item.product_image ? (
+                        <img src={item.product_image} alt={item.product_name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                          <Package className="h-5 w-5" />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 mb-1">{item.product_name}</h3>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {item.sell_unit_label} × {item.quantity}
-                      </p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {formatPrice(item.total_price)}
-                      </p>
+                      <h3 className="font-medium text-gray-900 text-sm mb-0.5 line-clamp-2">{item.product_name}</h3>
+                      <p className="text-xs text-gray-500 mb-1">{item.sell_unit_label} × {item.quantity}</p>
+                      <p className="text-sm font-bold text-gray-900">{formatPrice(item.total_price)}</p>
                     </div>
                   </div>
                 );
@@ -488,3 +489,23 @@ export default function OrderDetailPage({
   );
 }
 
+/**
+ * Order Detail Page - Wrapped in Suspense for useSearchParams
+ */
+export default function OrderDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }> | { id: string };
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <Spinner size="lg" />
+        </div>
+      }
+    >
+      <OrderDetailPageContent params={params} />
+    </Suspense>
+  );
+}

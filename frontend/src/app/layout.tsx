@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description:
     "Order groceries, fresh produce, and daily essentials from local vendors. Fast delivery to your doorstep.",
   keywords: ["ecommerce", "grocery", "quick commerce", "local vendors", "delivery"],
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

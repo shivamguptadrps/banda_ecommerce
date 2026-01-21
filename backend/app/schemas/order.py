@@ -49,6 +49,8 @@ class OrderItemResponse(BaseModel):
     price_per_unit: Decimal
     total_price: Decimal
     stock_quantity_used: Decimal
+    # Product image for display
+    product_image: Optional[str] = None
     # Return policy snapshot
     return_eligible: bool = False
     return_window_days: Optional[int] = None

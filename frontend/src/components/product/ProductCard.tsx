@@ -8,8 +8,9 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui";
+import { SellUnitSelectionModal } from "./SellUnitSelectionModal";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { addItem, updateItemQuantity, selectCartItemByProduct } from "@/store/slices/cartSlice";
+import { addItem, updateItemQuantity, selectCartItemByProduct, openCart } from "@/store/slices/cartSlice";
 import { Product, SellUnit } from "@/types/product";
 import { formatPrice, formatRating, cn } from "@/lib/utils";
 
@@ -35,13 +36,26 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
   }, [product.sell_units]);
   
   const [selectedUnit, setSelectedUnit] = useState<SellUnit | null>(defaultUnit);
+  const [showVariantModal, setShowVariantModal] = useState(false);
 
-  // Get cart item for this product/unit
+  // Check if product has multiple variants
+  const hasMultipleVariants = (product.sell_units?.length || 0) > 1;
+
+  // Get all cart items for this product (to handle multiple variants)
+  const allCartItems = useAppSelector((state) => state.cart.items);
+  const cartItemsForProduct = allCartItems.filter((item) => item.productId === product.id);
+  
+  // Get cart item for the currently selected unit
   const cartItem = useAppSelector((state) =>
     selectCartItemByProduct(state, product.id, selectedUnit?.id || "")
   );
 
-  const quantity = cartItem?.quantity || 0;
+  // If multiple variants and no selected unit, check if any variant is in cart
+  const anyVariantInCart = hasMultipleVariants && !selectedUnit && cartItemsForProduct.length > 0;
+  const variantInCart = anyVariantInCart ? cartItemsForProduct[0] : null;
+
+  const quantity = cartItem?.quantity || variantInCart?.quantity || 0;
+  const activeCartItem = cartItem || variantInCart;
   
   // Check stock status
   const isOutOfStock = product.is_in_stock === false || 
@@ -69,45 +83,78 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!selectedUnit || isOutOfStock) return;
+    if (isOutOfStock) return;
+
+    // If multiple variants, show modal
+    if (hasMultipleVariants) {
+      setShowVariantModal(true);
+      return;
+    }
+
+    // Single variant - add directly (use default unit or first available)
+    const unitToAdd = selectedUnit || defaultUnit || product.sell_units?.[0];
+    if (!unitToAdd) {
+      toast.error("Product variant not available");
+      return;
+    }
 
     dispatch(
       addItem({
         productId: product.id,
-        sellUnitId: selectedUnit.id,
+        sellUnitId: unitToAdd.id,
         quantity: 1,
         product,
-        sellUnit: selectedUnit,
+        sellUnit: unitToAdd,
       })
     );
     toast.success(`Added to cart`);
+    dispatch(openCart());
+  };
+
+  const handleVariantSelect = (sellUnit: SellUnit) => {
+    dispatch(
+      addItem({
+        productId: product.id,
+        sellUnitId: sellUnit.id,
+        quantity: 1,
+        product,
+        sellUnit,
+      })
+    );
+    toast.success(`Added to cart`);
+    dispatch(openCart());
+    setSelectedUnit(sellUnit);
   };
 
   const handleUpdateQuantity = (e: React.MouseEvent, newQuantity: number) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!selectedUnit) return;
+    
+    // Use the unit from cart item if available, otherwise selected unit
+    const unitToUpdate = activeCartItem?.sellUnit || selectedUnit || defaultUnit;
+    if (!unitToUpdate) return;
 
     dispatch(
       updateItemQuantity({
         productId: product.id,
-        sellUnitId: selectedUnit.id,
+        sellUnitId: unitToUpdate.id,
         quantity: newQuantity,
       })
     );
   };
 
   const mrpPrice = selectedUnit?.compare_price || selectedUnit?.mrp;
+  const MotionDiv = motion.div;
 
   if (variant === "compact") {
     return (
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: index * 0.03 }}
+        transition={{ delay: (index || 0) * 0.03 }}
+        className="relative"
       >
-        <Link href={`/product/${product.slug}`}>
-          <div className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+        <div className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
             {/* Discount Badge */}
             {discount > 0 && (
               <div className="absolute top-2 left-2 z-10 bg-[#0c831f] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
@@ -115,58 +162,89 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
               </div>
             )}
 
-            {/* Image */}
-            <div className="relative aspect-square bg-gradient-to-b from-gray-50 to-white p-3">
-              {primaryImage ? (
-                <img
-                  src={primaryImage}
-                  alt={product.name}
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-3xl bg-gray-100 rounded-lg">
-                  📦
-                </div>
-              )}
-              
-              {isOutOfStock && (
-                <div className="absolute inset-0 bg-white/90 flex items-center justify-center rounded-lg">
-                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Out of Stock</span>
-                </div>
-              )}
-            </div>
+            {/* Image - Clickable Link */}
+            <Link href={`/product/${product.slug}`} className="block">
+              <div className="relative aspect-square bg-gradient-to-b from-gray-50 to-white p-3">
+                {primaryImage ? (
+                  <img
+                    src={primaryImage}
+                    alt={product.name}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-3xl bg-gray-100 rounded-lg">
+                    📦
+                  </div>
+                )}
+                
+                {isOutOfStock && (
+                  <div className="absolute inset-0 bg-white/90 flex items-center justify-center rounded-lg">
+                    <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Out of Stock</span>
+                  </div>
+                )}
+              </div>
+            </Link>
 
             {/* Content */}
             <div className="p-2.5">
-              <h3 className="font-medium text-gray-900 text-xs line-clamp-2 min-h-[2rem] leading-tight">
-                {product.name}
-              </h3>
+              <Link href={`/product/${product.slug}`}>
+                <h3 className="font-medium text-gray-900 text-xs line-clamp-2 min-h-[2rem] leading-tight hover:text-[#22C55E] transition-colors">
+                  {product.name}
+                </h3>
+              </Link>
 
               {selectedUnit && (
                 <p className="text-[10px] text-gray-400 mt-0.5">{selectedUnit.label}</p>
+              )}
+              {hasMultipleVariants && !selectedUnit && (
+                <p className="text-[10px] text-gray-500 mt-0.5">Multiple options</p>
               )}
 
               <div className="flex items-center justify-between mt-2 gap-2 min-h-[1.75rem]">
                 <div className="flex-1 min-w-0">
                   <span className="text-sm font-bold text-gray-900">
-                    {formatPrice(selectedUnit?.price || product.min_price || 0)}
+                    {formatPrice(
+                      activeCartItem?.sellUnit?.price || 
+                      selectedUnit?.price || 
+                      defaultUnit?.price || 
+                      product.min_price || 
+                      0
+                    )}
                   </span>
-                  {mrpPrice && mrpPrice > (selectedUnit?.price || 0) && (
-                    <span className="text-[10px] text-gray-400 line-through ml-1">
-                      {formatPrice(mrpPrice)}
-                    </span>
-                  )}
+                  {(() => {
+                    const displayMrp = activeCartItem?.sellUnit?.compare_price || 
+                                      activeCartItem?.sellUnit?.mrp ||
+                                      mrpPrice;
+                    const displayPrice = activeCartItem?.sellUnit?.price || 
+                                         selectedUnit?.price || 
+                                         defaultUnit?.price || 
+                                         0;
+                    return displayMrp && displayMrp > displayPrice && (
+                      <span className="text-[10px] text-gray-400 line-through ml-1">
+                        {formatPrice(displayMrp)}
+                      </span>
+                    );
+                  })()}
                 </div>
 
-                {!isOutOfStock && selectedUnit && (
+                {!isOutOfStock && (
                   <div 
-                    onClick={(e) => e.preventDefault()}
-                    className="flex-shrink-0"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className="flex-shrink-0 relative z-10"
                   >
                     {quantity === 0 ? (
                       <button
                         onClick={handleAddToCart}
-                        className="h-7 w-7 flex items-center justify-center bg-[#0c831f] text-white rounded-lg hover:bg-[#0a6e1a] transition-colors flex-shrink-0"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        className="h-7 w-7 flex items-center justify-center bg-[#0c831f] text-white rounded-lg hover:bg-[#0a6e1a] transition-colors flex-shrink-0 cursor-pointer"
+                        title={hasMultipleVariants ? "Select variant" : "Add to cart"}
+                        type="button"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
@@ -174,7 +252,12 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
                       <div className="flex items-center bg-[#0c831f] rounded-lg min-w-[4rem]">
                         <button
                           onClick={(e) => handleUpdateQuantity(e, quantity - 1)}
-                          className="h-7 w-6 flex items-center justify-center text-white flex-shrink-0"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          className="h-7 w-6 flex items-center justify-center text-white flex-shrink-0 hover:bg-[#0a6e1a] transition-colors cursor-pointer"
+                          type="button"
                         >
                           <Minus className="h-3 w-3" />
                         </button>
@@ -183,7 +266,12 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
                         </span>
                         <button
                           onClick={(e) => handleUpdateQuantity(e, quantity + 1)}
-                          className="h-7 w-6 flex items-center justify-center text-white flex-shrink-0"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          className="h-7 w-6 flex items-center justify-center text-white flex-shrink-0 hover:bg-[#0a6e1a] transition-colors cursor-pointer"
+                          type="button"
                         >
                           <Plus className="h-3 w-3" />
                         </button>
@@ -194,17 +282,24 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
               </div>
             </div>
           </div>
-        </Link>
-      </motion.div>
+
+        {/* Variant Selection Modal - for compact variant */}
+        <SellUnitSelectionModal
+          isOpen={showVariantModal}
+          product={product}
+          onClose={() => setShowVariantModal(false)}
+          onSelect={handleVariantSelect}
+        />
+      </MotionDiv>
     );
   }
 
   // Default variant
   return (
-    <motion.div
+    <MotionDiv
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04 }}
+      transition={{ delay: (index || 0) * 0.04 }}
       className="group"
     >
       <Link href={`/product/${product.slug}`}>
@@ -321,16 +416,25 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
               </div>
 
               {/* Add to Cart - Fixed position */}
-              {!isOutOfStock && selectedUnit && (
+              {!isOutOfStock && (
                 <div 
-                  onClick={(e) => e.preventDefault()}
-                  className="flex-shrink-0"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className="flex-shrink-0 relative z-10"
                 >
                   {quantity === 0 ? (
                     <Button
                       size="sm"
                       onClick={handleAddToCart}
-                      className="h-9 px-4 bg-[#0c831f] hover:bg-[#0a6e1a] text-white font-semibold rounded-lg whitespace-nowrap"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      className="h-9 px-4 bg-[#0c831f] hover:bg-[#0a6e1a] text-white font-semibold rounded-lg whitespace-nowrap cursor-pointer"
+                      title={hasMultipleVariants ? "Select variant" : "Add to cart"}
+                      type="button"
                     >
                       ADD
                     </Button>
@@ -338,7 +442,12 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
                     <div className="flex items-center bg-[#0c831f] rounded-lg shadow-lg min-w-[5rem]">
                       <button
                         onClick={(e) => handleUpdateQuantity(e, quantity - 1)}
-                        className="h-9 w-9 flex items-center justify-center text-white hover:bg-[#0a6e1a] rounded-l-lg transition-colors flex-shrink-0"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        className="h-9 w-9 flex items-center justify-center text-white hover:bg-[#0a6e1a] rounded-l-lg transition-colors flex-shrink-0 cursor-pointer"
+                        type="button"
                       >
                         <Minus className="h-4 w-4" />
                       </button>
@@ -347,7 +456,12 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
                       </span>
                       <button
                         onClick={(e) => handleUpdateQuantity(e, quantity + 1)}
-                        className="h-9 w-9 flex items-center justify-center text-white hover:bg-[#0a6e1a] rounded-r-lg transition-colors flex-shrink-0"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        className="h-9 w-9 flex items-center justify-center text-white hover:bg-[#0a6e1a] rounded-r-lg transition-colors flex-shrink-0 cursor-pointer"
+                        type="button"
                       >
                         <Plus className="h-4 w-4" />
                       </button>
@@ -359,6 +473,14 @@ export function ProductCard({ product, index = 0, variant = "default" }: Product
           </div>
         </div>
       </Link>
-    </motion.div>
+
+      {/* Variant Selection Modal */}
+      <SellUnitSelectionModal
+        isOpen={showVariantModal}
+        product={product}
+        onClose={() => setShowVariantModal(false)}
+        onSelect={handleVariantSelect}
+      />
+    </MotionDiv>
   );
 }

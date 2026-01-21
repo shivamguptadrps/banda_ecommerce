@@ -232,8 +232,17 @@ function QuickCategoriesSection() {
   return (
     <section className="py-4 bg-gray-50">
       <div className="container-app">
-        <h2 className="text-lg font-bold text-gray-900 mb-3 px-4">Shop by Category</h2>
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide px-4 pb-2">
+        <div className="flex items-center justify-between mb-3 px-4">
+          <h2 className="text-lg font-bold text-gray-900">Shop by Category</h2>
+          <Link
+            href="/category"
+            className="text-sm font-semibold text-[#0c831f] hover:underline flex items-center gap-1"
+          >
+            See All
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4 px-4 pb-2">
           {topCategories.map((category, idx) => {
             const IconComponent = getCategoryIcon(category.name);
             const hasImage = category.image_url;
@@ -246,24 +255,24 @@ function QuickCategoriesSection() {
                 transition={{ delay: idx * 0.05 }}
               >
                 <Link href={`/category/${category.slug}`}>
-                  <div className="flex flex-col items-center w-[70px] group cursor-pointer">
-                    <div className="w-[70px] h-[70px] rounded-xl overflow-hidden bg-white shadow-sm mb-1.5 group-hover:shadow-md transition-shadow">
+                  <div className="flex flex-col items-center group cursor-pointer">
+                    <div className="w-full aspect-square max-w-[100px] rounded-xl overflow-hidden bg-white shadow-sm border border-gray-100 mb-2 group-hover:shadow-lg group-hover:border-[#0c831f]/30 transition-all mx-auto">
                       {hasImage ? (
                         <Image
                           src={category.image_url!}
                           alt={category.name}
-                          width={70}
-                          height={70}
-                          className="w-full h-full object-cover"
+                          width={100}
+                          height={100}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
                         <div className="w-full h-full bg-[#F0FDF4] flex items-center justify-center">
-                          <IconComponent className="h-7 w-7 text-[#22C55E]" />
+                          <IconComponent className="h-8 w-8 text-[#22C55E]" />
                         </div>
                       )}
                     </div>
-                    <p className="text-[11px] font-semibold text-gray-900 text-center leading-tight px-1 line-clamp-2">
-                      {category.name.length > 12 ? category.name.substring(0, 10) + ".." : category.name}
+                    <p className="text-xs sm:text-sm font-semibold text-gray-800 text-center leading-tight line-clamp-2 w-full">
+                      {category.name}
                     </p>
                   </div>
                 </Link>
@@ -339,49 +348,54 @@ function CategorySection({ section }: { section: { topCategory: CategoryTreeNode
 
   if (subcategories.length === 0) return null;
 
+  // Show only first 5 subcategories
+  const displaySubcategories = subcategories.slice(0, 5);
+
   return (
-    <section className="py-6 bg-white">
+    <section className="py-6 bg-white border-b border-gray-100">
       <div className="container-app">
-        <div className="flex items-center justify-between mb-3 px-4">
+        <div className="flex items-center justify-between mb-4 px-4">
           <h2 className="text-xl font-bold text-gray-900">{topCategory.name}</h2>
           <Link
             href={`/category/${topCategory.slug}`}
-            className="text-sm font-semibold text-[#22C55E] hover:underline flex items-center gap-1"
+            className="text-sm font-semibold text-[#0c831f] hover:underline flex items-center gap-1"
           >
             See All
             <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 pb-2">
-          {subcategories.map((subcat, idx) => {
+        {/* 5 columns grid for all screen sizes */}
+        <div className="grid grid-cols-5 gap-3 sm:gap-4 px-4">
+          {displaySubcategories.map((subcat, idx) => {
             const IconComponent = getCategoryIcon(subcat.name);
             const hasImage = subcat.image_url;
 
             return (
               <motion.div
                 key={subcat.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.03 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
               >
                 <Link href={`/category/${subcat.slug}`}>
-                  <div className="flex flex-col items-center w-[90px] group cursor-pointer">
-                    <div className="w-[90px] h-[90px] rounded-xl overflow-hidden bg-gray-50 shadow-sm mb-2 group-hover:shadow-md transition-shadow">
+                  <div className="flex flex-col items-center group cursor-pointer">
+                    {/* Wide responsive image */}
+                    <div className="w-full aspect-square rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm mb-2 group-hover:shadow-lg group-hover:border-[#0c831f]/30 transition-all">
                       {hasImage ? (
                         <Image
                           src={subcat.image_url!}
                           alt={subcat.name}
-                          width={90}
-                          height={90}
-                          className="w-full h-full object-cover"
+                          width={150}
+                          height={150}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
                         <div className="w-full h-full bg-[#F0FDF4] flex items-center justify-center">
-                          <IconComponent className="h-7 w-7 text-[#22C55E]" />
+                          <IconComponent className="h-8 w-8 sm:h-10 sm:w-10 text-[#22C55E]" />
                         </div>
                       )}
                     </div>
-                    <p className="text-xs font-medium text-gray-900 text-center leading-tight px-1 line-clamp-2">
+                    <p className="text-[11px] sm:text-xs md:text-sm font-medium text-gray-800 text-center leading-tight line-clamp-2 w-full">
                       {subcat.name}
                     </p>
                   </div>

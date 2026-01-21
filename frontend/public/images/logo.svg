@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" fill="none">
+  <defs>
+    <linearGradient id="bagGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34D399"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Shopping Bag Icon -->
+  <g transform="translate(4, 6)">
+    <!-- Bag Body -->
+    <path d="M8 16C8 14.8954 8.89543 14 10 14H38C39.1046 14 40 14.8954 40 16V42C40 44.2091 38.2091 46 36 46H12C9.79086 46 8 44.2091 8 42V16Z" fill="url(#bagGradient)"/>
+    
+    <!-- Bag Handle -->
+    <path d="M16 14V10C16 6.68629 18.6863 4 22 4H26C29.3137 4 32 6.68629 32 10V14" stroke="url(#bagGradient)" stroke-width="3" stroke-linecap="round" fill="none"/>
+    
+    <!-- Leaf/Fresh indicator -->
+    <path d="M24 22C24 22 20 26 20 30C20 34 24 36 24 36C24 36 28 34 28 30C28 26 24 22 24 22Z" fill="url(#leafGradient)"/>
+    <path d="M24 24V34" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    
+    <!-- Sparkle dots -->
+    <circle cx="16" cy="24" r="1.5" fill="white" opacity="0.8"/>
+    <circle cx="32" cy="38" r="1.5" fill="white" opacity="0.8"/>
+  </g>
+  
+  <!-- Text: Banda -->
+  <text x="60" y="32" font-family="'Poppins', 'Segoe UI', system-ui, sans-serif" font-size="26" font-weight="700" fill="#111827">Banda</text>
+  
+  <!-- Text: Bazaar -->
+  <text x="60" y="52" font-family="'Poppins', 'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="500" fill="#10B981" letter-spacing="3">BAZAAR</text>
+  
+  <!-- Tagline dot -->
+  <circle cx="152" cy="49" r="2" fill="#F59E0B"/>
+</svg>

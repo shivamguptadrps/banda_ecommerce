@@ -36,6 +36,7 @@ const authSlice = createSlice({
       state.error = null;
       // Clear tokens
       storage.clearAuth();
+      // Note: RTK Query cache will be cleared by resetting NavigationContainer key in App.tsx
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;

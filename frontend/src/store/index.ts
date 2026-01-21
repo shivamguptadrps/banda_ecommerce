@@ -3,7 +3,9 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 
 import authReducer from "./slices/authSlice";
 import cartReducer from "./slices/cartSlice";
+import locationReducer from "./slices/locationSlice";
 import { authApi } from "./api/authApi";
+import { locationApi } from "./api/locationApi";
 import { categoryApi } from "./api/categoryApi";
 import { vendorApi } from "./api/vendorApi";
 import { productApi } from "./api/productApi";
@@ -29,9 +31,11 @@ export const store = configureStore({
     // Slices
     auth: authReducer,
     cart: cartReducer,
+    location: locationReducer,
 
     // API reducers
     [authApi.reducerPath]: authApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [vendorApi.reducerPath]: vendorApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
@@ -56,6 +60,7 @@ export const store = configureStore({
       },
     }).concat(
       authApi.middleware,
+      locationApi.middleware,
       categoryApi.middleware,
       vendorApi.middleware,
       productApi.middleware,

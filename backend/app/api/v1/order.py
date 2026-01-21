@@ -25,28 +25,54 @@ from app.services.order_service import OrderService
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-def _build_order_response(order) -> OrderResponse:
+def _build_order_response(order, db: Session = None) -> OrderResponse:
     """Helper to build order response."""
-    items_response = [
-        OrderItemResponse(
-            id=item.id,
-            order_id=item.order_id,
-            product_id=item.product_id,
-            sell_unit_id=item.sell_unit_id,
-            product_name=item.product_name,
-            sell_unit_label=item.sell_unit_label,
-            unit_value=item.unit_value,
-            quantity=item.quantity,
-            price_per_unit=item.price_per_unit,
-            total_price=item.total_price,
-            stock_quantity_used=item.stock_quantity_used,
-            return_eligible=item.return_eligible,
-            return_window_days=item.return_window_days,
-            return_deadline=item.return_deadline,
-            created_at=item.created_at,
+    from app.models.product import ProductImage
+    
+    items_response = []
+    for item in order.items:
+        # Get product image if available
+        product_image = None
+        
+        # Try to get from loaded relationship first
+        if item.product and hasattr(item.product, 'images') and item.product.images:
+            primary_img = next((img for img in item.product.images if img.is_primary), None)
+            if primary_img:
+                product_image = primary_img.image_url
+            elif item.product.images:
+                product_image = item.product.images[0].image_url
+        
+        # Fallback: Query directly if product_id exists but image not loaded
+        if not product_image and item.product_id and db:
+            try:
+                img = db.query(ProductImage).filter(
+                    ProductImage.product_id == item.product_id
+                ).order_by(ProductImage.is_primary.desc(), ProductImage.display_order).first()
+                if img:
+                    product_image = img.image_url
+            except Exception:
+                pass
+        
+        items_response.append(
+            OrderItemResponse(
+                id=item.id,
+                order_id=item.order_id,
+                product_id=item.product_id,
+                sell_unit_id=item.sell_unit_id,
+                product_name=item.product_name,
+                sell_unit_label=item.sell_unit_label,
+                unit_value=item.unit_value,
+                quantity=item.quantity,
+                price_per_unit=item.price_per_unit,
+                total_price=item.total_price,
+                stock_quantity_used=item.stock_quantity_used,
+                product_image=product_image,
+                return_eligible=item.return_eligible,
+                return_window_days=item.return_window_days,
+                return_deadline=item.return_deadline,
+                created_at=item.created_at,
+            )
         )
-        for item in order.items
-    ]
     
     vendor_info = None
     if order.vendor:
@@ -149,7 +175,7 @@ def create_order(
             logger = logging.getLogger(__name__)
             logger.error(f"Failed to create payment for order {order.id}: {str(e)}")
     
-    return _build_order_response(order)
+    return _build_order_response(order, db)
 
 
 @router.get("", response_model=OrderListResponse)
@@ -169,7 +195,7 @@ def list_orders(
         status_filter=status,
     )
     
-    items = [_build_order_response(order) for order in orders]
+    items = [_build_order_response(order, db) for order in orders]
     
     return OrderListResponse(
         items=items,
@@ -196,7 +222,7 @@ def get_order(
             detail="Order not found",
         )
     
-    return _build_order_response(order)
+    return _build_order_response(order, db)
 
 
 @router.post("/{order_id}/cancel", response_model=OrderResponse)
@@ -209,7 +235,7 @@ def cancel_order(
     """Cancel an order."""
     service = OrderService(db)
     order = service.cancel_order(order_id, current_user.id, data)
-    return _build_order_response(order)
+    return _build_order_response(order, db)
 
 
 @router.get("/track/{order_number}", response_model=OrderResponse)
@@ -228,4 +254,4 @@ def track_order(
             detail="Order not found",
         )
     
-    return _build_order_response(order)
+    return _build_order_response(order, db)

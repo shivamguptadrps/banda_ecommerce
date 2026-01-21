@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "./baseQuery";
+import { baseQueryWithLogging } from "./baseQuery";
 import {
   Product,
   ProductFilters,
@@ -9,10 +9,11 @@ import {
 
 /**
  * Product API using RTK Query
+ * Uses baseQueryWithLogging to see all API calls in console
  */
 export const productApi = createApi({
   reducerPath: "productApi",
-  baseQuery,
+  baseQuery: baseQueryWithLogging,
   tagTypes: ["Product"],
   endpoints: (builder) => ({
     // Get products with filters
@@ -30,11 +31,23 @@ export const productApi = createApi({
         if (filters.search) params.append("search", filters.search);
         if (filters.min_price) params.append("min_price", filters.min_price.toString());
         if (filters.max_price) params.append("max_price", filters.max_price.toString());
-        if (filters.in_stock !== undefined) {
-          params.append("in_stock_only", filters.in_stock.toString());
+        // Only append in_stock_only if it's true (backend expects true or nothing, not false)
+        if (filters.in_stock === true) {
+          params.append("in_stock_only", "true");
         }
 
-        return `/products?${params.toString()}`;
+        // Ensure trailing slash to avoid 307 redirect
+        const queryString = `/products/?${params.toString()}`;
+        
+        // Force console log - will show in debugger
+        console.log('🔍 PRODUCT API CALL:', {
+          page,
+          size,
+          filters,
+          queryString,
+        });
+        
+        return queryString;
       },
       providesTags: ["Product"],
     }),

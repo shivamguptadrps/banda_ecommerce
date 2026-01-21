@@ -59,6 +59,11 @@ class User(Base):
         default=False,
         nullable=False,
     )
+    is_mobile_verified: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
     last_login: Mapped[Optional[datetime]] = mapped_column(
         DateTime,
         nullable=True,

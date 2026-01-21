@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Modal,
   TextInput,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,7 +33,17 @@ export default function OrderDetailScreen() {
   const navigation = useNavigation<any>();
   const orderId = route.params?.orderId;
 
-  const { data: order, isLoading, error, refetch } = useGetOrderQuery(orderId);
+  const { data: order, isLoading, error, refetch, isFetching } = useGetOrderQuery(orderId);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
   const [cancelOrder, { isLoading: isCancelling }] = useCancelOrderMutation();
   const [addToCart] = useAddToCartMutation();
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -222,7 +233,18 @@ export default function OrderDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing || isFetching} 
+            onRefresh={onRefresh}
+            tintColor="#22C55E"
+            colors={["#22C55E"]}
+          />
+        }
+      >
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity

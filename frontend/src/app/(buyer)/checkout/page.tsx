@@ -13,17 +13,20 @@ import {
   Loader2,
   AlertCircle,
   ArrowLeft,
+  Navigation,
+  CheckCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
 import { Button, Card } from "@/components/ui";
 import { RazorpayScript, isRazorpayLoaded, getRazorpay } from "@/components/payment/RazorpayScript";
-import { useAppSelector } from "@/store/hooks";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import {
   selectCartItems,
   selectCartTotal,
   selectCartItemCount,
+  clearCart,
 } from "@/store/slices/cartSlice";
 import {
   useGetAddressesQuery,
@@ -32,6 +35,10 @@ import {
   type Address,
   type AddressCreate,
 } from "@/store/api/addressApi";
+import { 
+  useCheckServiceabilityMutation,
+  useLazyReverseGeocodeQuery,
+} from "@/store/api/locationApi";
 import { useCreateOrderMutation } from "@/store/api/orderApi";
 import {
   useCreatePaymentOrderMutation,
@@ -198,11 +205,153 @@ function AddressForm({
     state: initialData?.state || "",
     pincode: initialData?.pincode || "",
     landmark: initialData?.landmark || "",
+    latitude: initialData?.latitude || undefined,
+    longitude: initialData?.longitude || undefined,
     is_default: initialData?.is_default || false,
   });
 
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [locationStatus, setLocationStatus] = useState<"none" | "detected" | "geocoded">(
+    initialData?.latitude && initialData?.longitude ? "detected" : "none"
+  );
+
+  const [triggerReverseGeocode] = useLazyReverseGeocodeQuery();
+
+  // Auto-geocode when address fields are filled
+  useEffect(() => {
+    const geocodeAddress = async () => {
+      if (
+        !formData.address_line_1 ||
+        !formData.city ||
+        !formData.pincode ||
+        formData.latitude ||
+        isGeocoding
+      ) {
+        return;
+      }
+
+      setIsGeocoding(true);
+      try {
+        // Build search query
+        const query = [
+          formData.address_line_1,
+          formData.address_line_2,
+          formData.city,
+          formData.state,
+          formData.pincode,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
+        // Use Nominatim forward geocoding
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+          {
+            headers: {
+              "User-Agent": "BandaBazaar/1.0",
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.length > 0) {
+            const result = data[0];
+            setFormData({
+              ...formData,
+              latitude: parseFloat(result.lat),
+              longitude: parseFloat(result.lon),
+            });
+            setLocationStatus("geocoded");
+          }
+        }
+      } catch (error) {
+        console.error("Geocoding failed:", error);
+      } finally {
+        setIsGeocoding(false);
+      }
+    };
+
+    // Debounce geocoding
+    const timer = setTimeout(geocodeAddress, 1500);
+    return () => clearTimeout(timer);
+  }, [formData.address_line_1, formData.city, formData.pincode, formData.state]);
+
+  // Handle GPS location detection
+  const handleDetectLocation = async () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setIsDetectingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          // Reverse geocode to get address
+          const geocodeResult = await triggerReverseGeocode({
+            lat: latitude,
+            lon: longitude,
+          }).unwrap();
+
+          // Auto-fill form with geocoded address
+          setFormData({
+            ...formData,
+            latitude,
+            longitude,
+            address_line_1: geocodeResult.address.road || geocodeResult.address.house_number || "",
+            address_line_2: geocodeResult.address.neighbourhood || "",
+            city: geocodeResult.address.city || geocodeResult.address.town || "",
+            state: geocodeResult.address.state || "",
+            pincode: geocodeResult.address.postcode || "",
+          });
+
+          setLocationStatus("detected");
+          toast.success("Location detected! Please verify and complete the address.");
+        } catch (error: any) {
+          // If reverse geocode fails, still save coordinates
+          setFormData({
+            ...formData,
+            latitude,
+            longitude,
+          });
+          setLocationStatus("detected");
+          toast.success("Location detected! Please fill in the address details.");
+        }
+
+        setIsDetectingLocation(false);
+      },
+      (error) => {
+        setIsDetectingLocation(false);
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.error("Location access denied. Please enable location in browser settings.");
+        } else {
+          toast.error("Failed to get your location. Please try again.");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Warn if no coordinates
+    if (!formData.latitude || !formData.longitude) {
+      const proceed = window.confirm(
+        "This address doesn't have location coordinates. You may not be able to place orders to this address. Do you want to continue?"
+      );
+      if (!proceed) return;
+    }
+    
     onSave(formData);
   };
 
@@ -213,6 +362,61 @@ function AddressForm({
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Location Detection Section */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-green-600" />
+              <span className="text-sm font-semibold text-gray-900">Location Detection</span>
+            </div>
+            {locationStatus !== "none" && (
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-100 rounded-full">
+                <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+                <span className="text-xs font-medium text-green-700">
+                  {locationStatus === "detected" ? "GPS Detected" : "Auto-detected"}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          <button
+            type="button"
+            onClick={handleDetectLocation}
+            disabled={isDetectingLocation}
+            className={cn(
+              "w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 border-dashed transition-all",
+              isDetectingLocation
+                ? "border-green-400 bg-green-100"
+                : "border-green-300 hover:border-green-400 hover:bg-green-100"
+            )}
+          >
+            {isDetectingLocation ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin text-green-600" />
+                <span className="text-sm font-medium text-green-700">Detecting location...</span>
+              </>
+            ) : (
+              <>
+                <Navigation className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium text-green-700">Use Current Location (GPS)</span>
+              </>
+            )}
+          </button>
+          
+          {formData.latitude && formData.longitude && (
+            <p className="text-xs text-gray-600 mt-2 text-center">
+              Coordinates: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
+            </p>
+          )}
+          
+          {isGeocoding && (
+            <p className="text-xs text-gray-500 mt-2 text-center flex items-center justify-center gap-1">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Auto-detecting location from address...
+            </p>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -525,6 +729,7 @@ function OrderSummary({
  */
 export default function CheckoutPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const cartItems = useAppSelector(selectCartItems);
   const cartTotal = useAppSelector(selectCartTotal);
   const itemCount = useAppSelector(selectCartItemCount);
@@ -535,10 +740,13 @@ export default function CheckoutPage() {
   const [paymentMode, setPaymentMode] = useState<"online" | "cod" | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSyncingCart, setIsSyncingCart] = useState(false);
+  const [serviceabilityError, setServiceabilityError] = useState<string | null>(null);
+  const [deliveryETA, setDeliveryETA] = useState<string | null>(null);
 
   const { data: addressesData } = useGetAddressesQuery();
   const [createAddress] = useCreateAddressMutation();
   const [createOrder] = useCreateOrderMutation();
+  const [checkServiceability] = useCheckServiceabilityMutation();
   const [createPaymentOrder] = useCreatePaymentOrderMutation();
   const [verifyPayment] = useVerifyPaymentMutation();
   const [addToCart] = useAddToCartMutation();
@@ -552,12 +760,54 @@ export default function CheckoutPage() {
     if (addressesData?.items && !selectedAddress) {
       const defaultAddress = addressesData.items.find((addr) => addr.is_default);
       if (defaultAddress) {
-        setSelectedAddress(defaultAddress.id);
+        handleAddressSelect(defaultAddress.id);
       } else if (addressesData.items.length > 0) {
-        setSelectedAddress(addressesData.items[0].id);
+        handleAddressSelect(addressesData.items[0].id);
       }
     }
-  }, [addressesData, selectedAddress]);
+  }, [addressesData]);
+
+  // Check serviceability when address is selected
+  const handleAddressSelect = async (addressId: string) => {
+    setSelectedAddress(addressId);
+    setServiceabilityError(null);
+    setDeliveryETA(null);
+
+    const address = addressesData?.items?.find((a) => a.id === addressId);
+    if (!address) return;
+
+    // Check if address has coordinates
+    if (!address.latitude || !address.longitude) {
+      setServiceabilityError("This address doesn't have location coordinates. Please update the address with your exact location.");
+      return;
+    }
+
+    try {
+      const result = await checkServiceability({
+        latitude: parseFloat(address.latitude as string),
+        longitude: parseFloat(address.longitude as string),
+      }).unwrap();
+
+      if (!result.serviceable) {
+        setServiceabilityError(
+          `Sorry, this address is ${result.distance_km} km away. We currently deliver within ${result.max_delivery_radius_km} km only.`
+        );
+      } else {
+        setDeliveryETA(getETADisplay(result.estimated_delivery_minutes));
+      }
+    } catch (error: any) {
+      console.error("Serviceability check failed:", error);
+      // Don't block checkout if serviceability check fails
+    }
+  };
+
+  const getETADisplay = (minutes: number): string => {
+    if (minutes <= 10) return "8-10 min";
+    if (minutes <= 15) return "10-15 min";
+    if (minutes <= 20) return "15-20 min";
+    if (minutes <= 30) return "20-30 min";
+    return `${minutes - 5}-${minutes + 5} min`;
+  };
 
   // Calculate totals
   const deliveryFee = cartTotal >= 500 ? 0 : 40; // Free delivery over ₹500
@@ -620,6 +870,11 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (serviceabilityError) {
+      toast.error("Please select a serviceable delivery address");
+      return;
+    }
+
     if (!paymentMode) {
       toast.error("Please select a payment method");
       return;
@@ -647,8 +902,9 @@ export default function CheckoutPage() {
         payment_mode: paymentMode,
       }).unwrap();
 
-      // If COD, redirect to success page
+      // If COD, clear cart and redirect to success page
       if (paymentMode === "cod") {
+        dispatch(clearCart()); // Clear local cart after successful order
         router.push(`${ROUTES.ORDER_DETAIL(order.id)}?success=true&mode=cod`);
         return;
       }
@@ -742,6 +998,9 @@ export default function CheckoutPage() {
             razorpay_signature: response.razorpay_signature,
           }).unwrap();
 
+          // Clear local cart after successful payment
+          dispatch(clearCart());
+          
           // Redirect to success page
           router.push(`${ROUTES.ORDER_DETAIL(orderId)}?success=true&mode=online`);
         } catch (error: any) {
@@ -801,7 +1060,27 @@ export default function CheckoutPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Address Selection */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Delivery Address</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Delivery Address</h2>
+                {deliveryETA && !serviceabilityError && (
+                  <div className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                    <span>🕐</span>
+                    <span>ETA: {deliveryETA}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Serviceability Error */}
+              {serviceabilityError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-red-800">Address not serviceable</p>
+                    <p className="text-sm text-red-600">{serviceabilityError}</p>
+                  </div>
+                </div>
+              )}
+
               {showAddressForm ? (
                 <AddressForm
                   onSave={handleSaveAddress}
@@ -810,7 +1089,7 @@ export default function CheckoutPage() {
               ) : (
                 <AddressSelection
                   selectedAddress={selectedAddress}
-                  onSelect={setSelectedAddress}
+                  onSelect={handleAddressSelect}
                   onAddNew={() => setShowAddressForm(true)}
                 />
               )}
@@ -842,7 +1121,7 @@ export default function CheckoutPage() {
                 size="lg"
                 onClick={handlePlaceOrder}
                 isLoading={isProcessing}
-                disabled={!selectedAddress || !paymentMode || isProcessing || isSyncingCart}
+                disabled={!selectedAddress || !paymentMode || isProcessing || isSyncingCart || !!serviceabilityError}
               >
                 {isSyncingCart
                   ? "Syncing cart..."
@@ -851,11 +1130,15 @@ export default function CheckoutPage() {
                   : `Place Order • ${formatPrice(total)}`}
               </Button>
 
-              {(!selectedAddress || !paymentMode) && (
+              {(!selectedAddress || !paymentMode || serviceabilityError) && (
                 <p className="text-xs text-gray-500 text-center mt-2">
-                  {!selectedAddress && "Please select a delivery address"}
-                  {!selectedAddress && !paymentMode && " and "}
-                  {!paymentMode && "select a payment method"}
+                  {serviceabilityError 
+                    ? "Please select a serviceable address"
+                    : !selectedAddress 
+                    ? "Please select a delivery address"
+                    : !paymentMode 
+                    ? "Please select a payment method"
+                    : ""}
                 </p>
               )}
             </div>

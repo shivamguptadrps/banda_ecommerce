@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header, MobileNav } from "@/components/layout";
 import { CartDrawer, CartButton } from "@/components/cart";
+import { ActiveOrderWidget } from "@/components/order/ActiveOrderWidget";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { initializeCart } from "@/store/slices/cartSlice";
 import { selectUser, selectIsAuthenticated, selectAuthLoading } from "@/store/slices/authSlice";
@@ -25,34 +26,44 @@ export default function BuyerLayout({
   const user = useAppSelector(selectUser);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const isLoading = useAppSelector(selectAuthLoading);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by tracking mount state
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Initialize cart from localStorage on mount
   useEffect(() => {
     dispatch(initializeCart());
   }, [dispatch]);
 
-  // Block delivery partners from accessing buyer routes
+  // Block non-buyers from accessing buyer routes
   useEffect(() => {
-    if (isLoading) return;
+    if (!mounted || isLoading) return;
 
     if (isAuthenticated && user?.role === "delivery_partner") {
-      // Redirect delivery partners to their orders page
       router.replace(ROUTES.DELIVERY_PARTNER_ORDERS);
       return;
     }
-  }, [isLoading, isAuthenticated, user, router]);
 
-  // Show loading while checking auth
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <PageSpinner />
-      </div>
-    );
-  }
+    if (isAuthenticated && user?.role === "vendor") {
+      router.replace(ROUTES.VENDOR_DASHBOARD);
+      return;
+    }
 
-  // Don't render buyer layout if user is delivery partner (will redirect)
-  if (isAuthenticated && user?.role === "delivery_partner") {
+    if (isAuthenticated && user?.role === "admin") {
+      router.replace(ROUTES.ADMIN_DASHBOARD);
+      return;
+    }
+  }, [mounted, isLoading, isAuthenticated, user, router]);
+
+  // Don't render buyer layout if user is not buyer (will redirect) - only check after mount
+  if (
+    mounted &&
+    isAuthenticated &&
+    (user?.role === "delivery_partner" || user?.role === "vendor" || user?.role === "admin")
+  ) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <PageSpinner />
@@ -76,6 +87,9 @@ export default function BuyerLayout({
 
       {/* Floating Cart Button (Mobile) */}
       <CartButton variant="fab" />
+
+      {/* Active Order Widget - shows live tracking for active orders */}
+      <ActiveOrderWidget />
     </div>
   );
 }

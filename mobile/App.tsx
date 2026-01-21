@@ -2,18 +2,29 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
+import { LogBox } from "react-native";
 import { store } from "./src/store";
 import { setCredentials } from "./src/store/slices/authSlice";
 import { storage } from "./src/lib/storage";
 import LoginScreen from "./src/screens/auth/LoginScreen";
 import RegisterScreen from "./src/screens/auth/RegisterScreen";
 import HomeScreen from "./src/screens/HomeScreen";
-import { Spinner } from "./src/components/ui/Spinner";
+import { AnimatedSplashScreen } from "./src/components/ui/AnimatedSplashScreen";
 import { AuthNavigator } from "./src/navigation/AuthNavigator";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import { DeliveryPartnerTabNavigator } from "./src/navigation/DeliveryPartnerTabNavigator";
 import { ErrorBoundary } from "./src/components/ErrorBoundary";
 import { TabBarProvider } from "./src/contexts/TabBarContext";
+
+// Enable console logs in release builds
+LogBox.ignoreAllLogs(false);
+if (!__DEV__) {
+  // Keep console logs in release
+  const originalLog = console.log;
+  console.log = (...args: any[]) => {
+    originalLog(...args);
+  };
+}
 
 const Stack = createNativeStackNavigator();
 
@@ -42,10 +53,9 @@ function RootNavigator() {
         }
       } catch (error) {
         console.error("Auth init error:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
+    
     initAuth();
 
     // Subscribe to auth state changes
@@ -55,11 +65,28 @@ function RootNavigator() {
       setUserRole(state.auth.user?.role || null);
     });
 
-    return unsubscribe;
+    // Safety timeout - force continue after 2.5 seconds if splash doesn't complete
+    const safetyTimeout = setTimeout(() => {
+      console.warn("Launch timeout - forcing app to continue");
+      setIsLoading(false);
+    }, 2500);
+
+    return () => {
+      unsubscribe();
+      clearTimeout(safetyTimeout);
+    };
   }, []);
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <AnimatedSplashScreen
+        onAnimationComplete={() => {
+          // Immediately hide splash when animation completes
+          console.log("Splash animation completed");
+          setIsLoading(false);
+        }}
+      />
+    );
   }
 
   // Check user role and show appropriate navigator
@@ -69,8 +96,11 @@ function RootNavigator() {
   const isDeliveryPartner = userRole === "delivery_partner";
   const isVendor = userRole === "vendor";
   
+  // Use key to force remount when role changes - this clears navigation state
+  const navigatorKey = `${isAuthenticated ? userRole || 'guest' : 'guest'}`;
+  
   return (
-    <NavigationContainer>
+    <NavigationContainer key={navigatorKey}>
       {isDeliveryPartner ? (
         // Delivery partners get their own tab navigator with delivery partner routes
         <AppNavigator isDeliveryPartner={true} isVendor={false} />

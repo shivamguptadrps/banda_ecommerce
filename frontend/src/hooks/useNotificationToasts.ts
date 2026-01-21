@@ -10,9 +10,22 @@ import {
   NotificationType,
 } from "@/store/api/notificationApi";
 
+// Time window for showing toast notifications (30 minutes in milliseconds)
+const TOAST_TIME_WINDOW_MS = 30 * 60 * 1000;
+
+/**
+ * Check if a notification is recent (within the last 30 minutes)
+ */
+function isRecentNotification(notification: Notification): boolean {
+  const now = new Date().getTime();
+  const notificationTime = new Date(notification.created_at).getTime();
+  return (now - notificationTime) <= TOAST_TIME_WINDOW_MS;
+}
+
 /**
  * Hook to show toast notifications for critical notifications
- * This listens for new unread notifications and shows toasts for critical ones
+ * Only shows toasts for notifications created within the last 30 minutes.
+ * Older notifications can be viewed by clicking the bell icon.
  */
 export function useNotificationToasts() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -42,6 +55,14 @@ export function useNotificationToasts() {
     notifications.forEach((notification: Notification) => {
       // Skip if already shown
       if (shownNotificationIds.current.has(notification.id)) {
+        return;
+      }
+
+      // IMPORTANT: Only show toasts for notifications from the last 30 minutes
+      // Older notifications should only appear when user clicks the bell icon
+      if (!isRecentNotification(notification)) {
+        // Mark as "seen" so we don't check it again, but don't show toast
+        shownNotificationIds.current.add(notification.id);
         return;
       }
 

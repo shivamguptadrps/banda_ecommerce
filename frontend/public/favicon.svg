@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="bagGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34D399"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="24" cy="24" r="24" fill="white"/>
+  
+  <!-- Shopping Bag -->
+  <path d="M12 18C12 16.8954 12.8954 16 14 16H34C35.1046 16 36 16.8954 36 18V38C36 40.2091 34.2091 42 32 42H16C13.7909 42 12 40.2091 12 38V18Z" fill="url(#bagGrad)"/>
+  
+  <!-- Handle -->
+  <path d="M18 16V12C18 9.23858 20.2386 7 23 7H25C27.7614 7 30 9.23858 30 12V16" stroke="url(#bagGrad)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  
+  <!-- Leaf -->
+  <path d="M24 22C24 22 20 25.5 20 29C20 32.5 24 34.5 24 34.5C24 34.5 28 32.5 28 29C28 25.5 24 22 24 22Z" fill="url(#leafGrad)"/>
+  <path d="M24 24V33" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

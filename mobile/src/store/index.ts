@@ -16,6 +16,7 @@ import { searchApi } from "./api/searchApi";
 import { deliveryPartnerApi } from "./api/deliveryPartnerApi";
 import { vendorApi } from "./api/vendorApi";
 import { vendorProductApi } from "./api/vendorProductApi";
+import { locationApi } from "./api/locationApi";
 
 export const store = configureStore({
   reducer: {
@@ -35,6 +36,7 @@ export const store = configureStore({
     [deliveryPartnerApi.reducerPath]: deliveryPartnerApi.reducer,
     [vendorApi.reducerPath]: vendorApi.reducer,
     [vendorProductApi.reducerPath]: vendorProductApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -56,7 +58,8 @@ export const store = configureStore({
       searchApi.middleware,
       deliveryPartnerApi.middleware,
       vendorApi.middleware,
-      vendorProductApi.middleware
+      vendorProductApi.middleware,
+      locationApi.middleware
     ),
 });
 

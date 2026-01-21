@@ -87,6 +87,7 @@ class UserResponse(BaseModel):
     role: UserRole
     is_active: bool
     is_email_verified: bool
+    is_mobile_verified: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
     

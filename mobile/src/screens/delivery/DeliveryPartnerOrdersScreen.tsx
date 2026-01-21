@@ -18,6 +18,7 @@ import {
   useGetProfileQuery,
   DeliveryPartnerOrder,
 } from "@/store/api/deliveryPartnerApi";
+import { storage } from "@/lib/storage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearCredentials } from "@/store/slices/authSlice";
 import { Spinner } from "@/components/ui/Spinner";
@@ -44,9 +45,26 @@ export default function DeliveryPartnerOrdersScreen() {
     status: statusFilter,
   });
 
-  const handleLogout = () => {
-    dispatch(clearCredentials());
-    navigation.replace("DeliveryPartnerLogin");
+  const handleLogout = async () => {
+    try {
+      await storage.clearAuth();
+      dispatch(clearCredentials());
+      // Reset navigation to login - clears all navigation state
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "DeliveryPartnerLogin" }],
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even on error, clear auth
+      await storage.clearAuth();
+      dispatch(clearCredentials());
+      try {
+        (navigation as any).navigate("DeliveryPartnerLogin");
+      } catch (navError) {
+        console.error("Navigation error:", navError);
+      }
+    }
   };
 
   const handleOrderPress = (orderId: string) => {

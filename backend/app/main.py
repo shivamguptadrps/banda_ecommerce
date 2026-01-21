@@ -55,12 +55,22 @@ async def lifespan(app: FastAPI):
     print(f"[STARTING] {settings.app_name} v{settings.app_version}")
     print(f"[INFO] API Docs: http://localhost:8000/docs")
     
-    # Check database connection
+    # Check database connection (non-blocking - app will start even if DB is temporarily unavailable)
     print("[INFO] Checking database connection...")
-    check_database_connection()
+    try:
+        check_database_connection()
+        logger.info("Database connection successful")
+    except Exception as e:
+        logger.warning(f"Database connection check failed (app will continue): {e}")
+        print(f"[WARNING] Database connection check failed, but app will continue: {e}")
     
     # Start background tasks (always, for order auto-cancellation)
-    await task_runner.start()
+    try:
+        await task_runner.start()
+        logger.info("Background tasks started")
+    except Exception as e:
+        logger.warning(f"Background tasks failed to start (app will continue): {e}")
+        print(f"[WARNING] Background tasks failed to start, but app will continue: {e}")
     
     yield
     

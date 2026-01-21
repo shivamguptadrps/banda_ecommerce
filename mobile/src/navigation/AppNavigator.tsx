@@ -45,26 +45,18 @@ export function AppNavigator({
       screenOptions={{ headerShown: false }}
       initialRouteName={initialRoute}
     >
-      {/* Main Tabs - Always available but only used for buyers */}
-      <Stack.Screen name="MainTabs" component={TabNavigator} />
-      
-      {/* Delivery Partner Tabs - Always available but only used for delivery partners */}
-      <Stack.Screen
-        name="DeliveryPartnerTabs"
-        component={DeliveryPartnerTabNavigator}
-        options={{
-          headerShown: false,
-        }}
-      />
+      {/* Role-specific root tabs */}
+      {!isDeliveryPartner && !isVendor ? (
+        <Stack.Screen name="MainTabs" component={TabNavigator} />
+      ) : null}
 
-      {/* Vendor Tabs - Always available but only used for vendors */}
-      <Stack.Screen
-        name="VendorTabs"
-        component={VendorTabNavigator}
-        options={{
-          headerShown: false,
-        }}
-      />
+      {isDeliveryPartner ? (
+        <Stack.Screen name="DeliveryPartnerTabs" component={DeliveryPartnerTabNavigator} options={{ headerShown: false }} />
+      ) : null}
+
+      {isVendor ? (
+        <Stack.Screen name="VendorTabs" component={VendorTabNavigator} options={{ headerShown: false }} />
+      ) : null}
       
       {/* Auth Screens */}
       <Stack.Screen
@@ -89,93 +81,23 @@ export function AppNavigator({
         }}
       />
       
-      {/* Product & Category Screens */}
-      <Stack.Screen
-        name="CategoryDetail"
-        component={CategoryDetailScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ProductDetail"
-        component={ProductDetailScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ProductListing"
-        component={ProductListingScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="VendorStore"
-        component={VendorStoreScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      
-      {/* Buyer Screens */}
-      <Stack.Screen
-        name="Checkout"
-        component={CheckoutScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="AddressList"
-        component={AddressListScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="AddressForm"
-        component={AddressFormScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="OrderDetail"
-        component={OrderDetailScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ReturnRequest"
-        component={ReturnRequestScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ReturnRequests"
-        component={ReturnRequestsScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="ReturnRequestDetail"
-        component={ReturnRequestDetailScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
+      {/* Buyer-only Screens (vendors/delivery partners must not see product listing, cart, etc.) */}
+      {!isDeliveryPartner && !isVendor ? (
+        <>
+          <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ProductDetail" component={ProductDetailScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ProductListing" component={ProductListingScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="VendorStore" component={VendorStoreScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Checkout" component={CheckoutScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="AddressList" component={AddressListScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="AddressForm" component={AddressFormScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="OrderDetail" component={OrderDetailScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ReturnRequest" component={ReturnRequestScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ReturnRequests" component={ReturnRequestsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ReturnRequestDetail" component={ReturnRequestDetailScreen} options={{ headerShown: false }} />
+        </>
+      ) : null}
       
       {/* Delivery Partner Screens */}
       <Stack.Screen

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,13 @@ import {
   Modal,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
 } from "react-native";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { clearCredentials, updateUser } from "@/store/slices/authSlice";
-import { useLogoutMutation, useUpdateCurrentUserMutation } from "@/store/api/authApi";
+import { useLogoutMutation, useUpdateCurrentUserMutation, useGetCurrentUserQuery } from "@/store/api/authApi";
 import { storage } from "@/lib/storage";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
@@ -27,10 +28,53 @@ export default function ProfileScreen() {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
   const [updateCurrentUser, { isLoading: isUpdating }] = useUpdateCurrentUserMutation();
+  const { refetch: refetchUser, isFetching: isFetchingUser } = useGetCurrentUserQuery(undefined, {
+    skip: !isAuthenticated,
+  });
   
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setRefreshing(true);
+    try {
+      const result = await refetchUser();
+      // Update Redux state with fresh user data
+      if (result.data) {
+        dispatch(updateUser(result.data));
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchUser, isAuthenticated, dispatch]);
+
+  const onRefresh = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setRefreshing(true);
+    try {
+      const result = await refetchUser();
+      // Update Redux state with fresh user data
+      if (result.data) {
+        dispatch(updateUser(result.data));
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchUser, isAuthenticated, dispatch]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setRefreshing(true);
+    try {
+      await refetchUser();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetchUser, isAuthenticated]);
 
   const performLogout = async () => {
     console.log("🔄 performLogout STARTED");
@@ -55,40 +99,26 @@ export default function ProfileScreen() {
         });
       }
       
-      console.log("🏠 Step 5: Navigating to Home...");
-      // Navigate to Home tab (product listing)
+      console.log("🏠 Step 5: Resetting navigation to Login...");
+      // Reset navigation to Login screen
       setTimeout(() => {
         try {
-          console.log("📍 Attempting CommonActions.reset...");
+          console.log("📍 Attempting CommonActions.reset to Login...");
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [
-                {
-                  name: "MainTabs",
-                  state: {
-                    routes: [{ name: "Home" }],
-                    index: 0,
-                  },
-                },
-              ],
+              routes: [{ name: "Login" }],
             })
           );
-          console.log("✅ Navigation successful");
+          console.log("✅ Navigation reset successful");
         } catch (navError: any) {
           console.error("❌ CommonActions failed:", navError);
           try {
-            console.log("🔄 Trying simple navigate...");
-            (navigation as any).navigate("MainTabs", { screen: "Home" });
-            console.log("✅ Simple navigate successful");
+            console.log("🔄 Trying navigate to Login...");
+            (navigation as any).navigate("Login");
+            console.log("✅ Navigate to Login successful");
           } catch (e: any) {
-            console.error("❌ Simple navigate failed:", e);
-            try {
-              console.log("🔄 Trying goBack...");
-              (navigation as any).goBack();
-            } catch (goBackErr: any) {
-              console.error("❌ All navigation methods failed:", goBackErr);
-            }
+            console.error("❌ Navigation failed:", e);
           }
         }
       }, 200);
@@ -99,9 +129,9 @@ export default function ProfileScreen() {
       dispatch(clearCredentials());
       setTimeout(() => {
         try {
-          (navigation as any).navigate("MainTabs", { screen: "Home" });
+          (navigation as any).navigate("Login");
         } catch (navError) {
-          (navigation as any).goBack();
+          console.error("Navigation error:", navError);
         }
       }, 200);
     }
@@ -202,6 +232,14 @@ export default function ProfileScreen() {
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing || isFetchingUser} 
+              onRefresh={onRefresh}
+              tintColor="#22C55E"
+              colors={["#22C55E"]}
+            />
+          }
           showsVerticalScrollIndicator={false}
         >
           {isAuthenticated && user ? (

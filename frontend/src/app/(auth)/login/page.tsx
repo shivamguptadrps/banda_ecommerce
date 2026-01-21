@@ -6,61 +6,75 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Mail, Lock, Truck, Smartphone } from "lucide-react";
+import { ArrowLeft, Smartphone } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { Button, Input, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui";
-import { useLoginMutation } from "@/store/api/authApi";
-import { useLoginMutation as useDeliveryPartnerLoginMutation } from "@/store/api/deliveryPartnerApi";
+import { Button, Input, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui";
+import { useSendOTPMutation, useVerifyOTPMutation } from "@/store/api/authApi";
 import { useAppDispatch } from "@/store/hooks";
 import { setCredentials } from "@/store/slices/authSlice";
 import { ROUTES } from "@/lib/constants";
 
-/**
- * Login Form Schema
- */
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(1, "Password is required"),
+const mobileSchema = z.object({
+  mobile_number: z.string().regex(/^[6-9]\d{9}$/, "Enter valid 10-digit mobile number"),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type MobileFormData = z.infer<typeof mobileSchema>;
 
-/**
- * Login Page with Delivery Partner Login
- */
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [login, { isLoading }] = useLoginMutation();
-  const [deliveryPartnerLogin, { isLoading: isDeliveryPartnerLoading }] = useDeliveryPartnerLoginMutation();
-  const [showDeliveryPartnerLogin, setShowDeliveryPartnerLogin] = useState(false);
-  const [deliveryPartnerPhone, setDeliveryPartnerPhone] = useState("");
-  const [deliveryPartnerOTP, setDeliveryPartnerOTP] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+  const [step, setStep] = useState<"mobile" | "otp">("mobile");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpExpiresIn, setOtpExpiresIn] = useState(0);
+  const [displayOTP, setDisplayOTP] = useState<string | null>(null);
+
+  const [sendOTP, { isLoading: isSendingOTP }] = useSendOTPMutation();
+  const [verifyOTP, { isLoading: isVerifyingOTP }] = useVerifyOTPMutation();
+
+  const mobileForm = useForm<MobileFormData>({
+    resolver: zodResolver(mobileSchema),
+    defaultValues: { mobile_number: "" },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleSendOTP = async (data: MobileFormData) => {
     try {
-      const result = await login(data).unwrap();
+      const result = await sendOTP({ mobile_number: data.mobile_number }).unwrap();
+      setMobileNumber(data.mobile_number);
+      setStep("otp");
+      setOtpExpiresIn(result.expires_in);
+      setDisplayOTP(result.otp_code);
 
-      // Validate response has required fields
-      if (!result.user || !result.access_token || !result.refresh_token) {
-        toast.error("Invalid response from server. Please try again.");
-        return;
-      }
+      // countdown
+      let timeLeft = result.expires_in;
+      const timer = setInterval(() => {
+        timeLeft -= 1;
+        setOtpExpiresIn(timeLeft);
+        if (timeLeft <= 0) clearInterval(timer);
+      }, 1000);
 
-      // Save credentials to Redux store
+      toast.success(`OTP sent to ${result.mobile_number}`);
+    } catch (error: any) {
+      toast.error(error?.data?.detail || "Failed to send OTP");
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    if (otp.length !== 6) {
+      toast.error("Please enter 6-digit OTP");
+      return;
+    }
+
+    try {
+      const result = await verifyOTP({ mobile_number: mobileNumber, otp }).unwrap();
       dispatch(
         setCredentials({
           user: result.user,
@@ -68,269 +82,122 @@ export default function LoginPage() {
           refresh_token: result.refresh_token,
         })
       );
-
-      toast.success("Welcome back!");
-
-      // Redirect based on role
-      const redirectPath =
-        result.user.role === "vendor"
-          ? ROUTES.VENDOR_DASHBOARD
-          : result.user.role === "admin"
-          ? ROUTES.ADMIN_DASHBOARD
-          : ROUTES.HOME;
-
-      router.push(redirectPath);
+      toast.success("Welcome to Banda Bazaar!");
+      router.push(ROUTES.HOME);
     } catch (error: any) {
-      const errorMessage = error?.data?.detail || error?.message || "Login failed. Please try again.";
-      toast.error(errorMessage);
-    }
-  };
-
-  const handleDeliveryPartnerLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!deliveryPartnerPhone || !deliveryPartnerOTP) {
-      toast.error("Please enter phone number and OTP");
-      return;
-    }
-
-    // Validate phone number
-    const phoneRegex = /^[6-9]\d{9}$/;
-    const cleanPhone = deliveryPartnerPhone.replace(/\s|-/g, "");
-    if (!phoneRegex.test(cleanPhone)) {
-      toast.error("Please enter a valid 10-digit phone number");
-      return;
-    }
-
-    // Validate OTP
-    if (deliveryPartnerOTP.length !== 4 || !/^\d{4}$/.test(deliveryPartnerOTP)) {
-      toast.error("OTP must be 4 digits");
-      return;
-    }
-
-    try {
-      const result = await deliveryPartnerLogin({
-        phone: cleanPhone,
-        otp: deliveryPartnerOTP,
-      }).unwrap();
-
-      // Store tokens and user data
-      dispatch(
-        setCredentials({
-          user: {
-            id: result.delivery_partner.id,
-            email: `delivery_${result.delivery_partner.phone}@banda.com`,
-            name: result.delivery_partner.name,
-            phone: result.delivery_partner.phone,
-            role: "delivery_partner",
-            is_active: result.delivery_partner.is_active,
-            created_at: new Date().toISOString(),
-          },
-          access_token: result.access_token,
-          refresh_token: result.refresh_token,
-        })
-      );
-
-      toast.success("Login successful!");
-      router.push(ROUTES.DELIVERY_PARTNER_ORDERS);
-    } catch (error: any) {
-      toast.error(error?.data?.detail || "Login failed. Please check your credentials.");
+      toast.error(error?.data?.detail || "Invalid OTP");
     }
   };
 
   return (
-    <Card className="animate-fade-in">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Welcome Back</CardTitle>
-        <CardDescription>
-          {showDeliveryPartnerLogin ? "Delivery Partner Login" : "Sign in to your account to continue"}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        {!showDeliveryPartnerLogin ? (
-          // Regular Login Form
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email */}
-            <Input
-              label="Email"
-              type="email"
-              placeholder="Enter your email"
-              leftIcon={<Mail className="h-4 w-4" />}
-              error={errors.email?.message}
-              {...register("email")}
-            />
-
-            {/* Password */}
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Enter your password"
-              leftIcon={<Lock className="h-4 w-4" />}
-              error={errors.password?.message}
-              {...register("password")}
-            />
-
-            {/* Forgot Password */}
-            <div className="text-right">
-              <Link
-                href="/forgot-password"
-                className="text-sm text-primary hover:underline"
+    <div className="min-h-screen p-4 bg-gradient-to-br from-green-50 via-white to-emerald-50">
+      <div className="max-w-md mx-auto pt-10">
+        <Card className="w-full animate-fade-in">
+          <CardHeader className="text-center">
+            {step === "otp" ? (
+              <button
+                onClick={() => {
+                  setStep("mobile");
+                  setOtp("");
+                  setDisplayOTP(null);
+                }}
+                className="absolute left-4 top-4 p-2 hover:bg-gray-100 rounded-full"
               >
-                Forgot password?
-              </Link>
-            </div>
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+            ) : null}
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              fullWidth
-              size="lg"
-              isLoading={isLoading}
-            >
-              Sign In
-            </Button>
-          </form>
-        ) : (
-          // Delivery Partner Login Form
-          <form onSubmit={handleDeliveryPartnerLogin} className="space-y-4">
-            {/* Phone Number */}
-            <div>
-              <label
-                htmlFor="delivery-phone"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Phone Number
-              </label>
-              <div className="relative">
-                <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  id="delivery-phone"
+            <CardTitle className="text-2xl font-bold">Login</CardTitle>
+            <CardDescription>
+              {step === "mobile"
+                ? "Enter your mobile number to get OTP"
+                : `OTP sent to ${mobileNumber.slice(0, 2)}****${mobileNumber.slice(-2)}`}
+            </CardDescription>
+          </CardHeader>
+
+          {step === "mobile" ? (
+            <CardContent className="space-y-4">
+              <form onSubmit={mobileForm.handleSubmit(handleSendOTP)} className="space-y-4">
+                <Input
+                  label="Mobile Number"
                   type="tel"
-                  value={deliveryPartnerPhone}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 10) {
-                      setDeliveryPartnerPhone(value);
-                    }
-                  }}
                   placeholder="9876543210"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  required
+                  leftIcon={<Smartphone className="h-4 w-4" />}
+                  error={mobileForm.formState.errors.mobile_number?.message}
                   maxLength={10}
-                />
-              </div>
-              <p className="mt-1 text-xs text-gray-500">
-                10-digit phone number (starting with 6-9)
-              </p>
-            </div>
-
-            {/* OTP */}
-            <div>
-              <label
-                htmlFor="delivery-otp"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                OTP
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  id="delivery-otp"
-                  type="text"
-                  value={deliveryPartnerOTP}
+                  {...mobileForm.register("mobile_number")}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 4) {
-                      setDeliveryPartnerOTP(value);
-                    }
+                    const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    mobileForm.setValue("mobile_number", value);
                   }}
-                  placeholder="1234"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center text-xl tracking-widest font-mono"
-                  required
-                  maxLength={4}
                 />
-              </div>
-              <p className="mt-1 text-xs text-gray-500">
-                Use OTP: <span className="font-mono font-semibold">1234</span> for testing
-              </p>
-            </div>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              fullWidth
-              size="lg"
-              isLoading={isDeliveryPartnerLoading}
-              leftIcon={<Truck className="h-4 w-4" />}
-            >
-              {isDeliveryPartnerLoading ? "Logging in..." : "Login as Delivery Partner"}
-            </Button>
-          </form>
-        )}
-      </CardContent>
+                <Button type="submit" fullWidth size="lg" isLoading={isSendingOTP}>
+                  Send OTP
+                </Button>
+              </form>
 
-      <CardFooter className="flex flex-col items-center gap-3">
-        {!showDeliveryPartnerLogin ? (
-          <>
-            <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
-              <Link
-                href={ROUTES.REGISTER}
-                className="font-medium text-primary hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
-            
-            {/* Delivery Partner Login Section */}
-            <div className="w-full border-t border-gray-200 pt-4 mt-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-1 h-px bg-gray-200"></div>
-                <span className="text-xs text-gray-500 font-medium">OR</span>
-                <div className="flex-1 h-px bg-gray-200"></div>
+              <div className="pt-2">
+                <Link
+                  href="/login/staff"
+                  className="block text-center text-sm text-gray-600 hover:text-green-600 transition-colors"
+                >
+                  Not a customer? Vendor/Admin/Delivery Partner login →
+                </Link>
               </div>
+            </CardContent>
+          ) : (
+            <CardContent className="space-y-4">
+              {displayOTP ? (
+                <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 text-center">
+                  <p className="text-xs text-green-700 font-medium mb-1">OTP (Testing)</p>
+                  <p className="text-3xl font-bold text-green-600 tracking-widest font-mono">{displayOTP}</p>
+                </div>
+              ) : null}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Enter 6-digit OTP</label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  placeholder="123456"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-center text-2xl tracking-widest font-mono"
+                  maxLength={6}
+                  autoFocus
+                />
+                {otpExpiresIn > 0 ? (
+                  <p className="mt-2 text-xs text-gray-500 text-center">OTP expires in {formatTime(otpExpiresIn)}</p>
+                ) : null}
+              </div>
+
+              <Button onClick={handleVerifyOTP} fullWidth size="lg" isLoading={isVerifyingOTP} disabled={otp.length !== 6}>
+                Verify OTP
+              </Button>
+
               <button
                 type="button"
-                onClick={() => setShowDeliveryPartnerLogin(true)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors"
+                onClick={async () => {
+                  try {
+                    const result = await sendOTP({ mobile_number: mobileNumber }).unwrap();
+                    setOtp("");
+                    setDisplayOTP(result.otp_code);
+                    setOtpExpiresIn(result.expires_in);
+                    toast.success(`OTP resent to ${result.mobile_number}`);
+                  } catch (error: any) {
+                    toast.error(error?.data?.detail || "Failed to resend OTP");
+                  }
+                }}
+                className="w-full text-sm text-green-600 hover:text-green-700 transition-colors"
+                disabled={otpExpiresIn > 240 || isSendingOTP}
               >
-                <Truck className="h-5 w-5 text-primary" />
-                <span className="text-sm font-semibold text-gray-700">Delivery Partner Login</span>
+                Resend OTP {otpExpiresIn > 240 ? `(in ${formatTime(otpExpiresIn - 240)})` : ""}
               </button>
-              <p className="text-xs text-gray-500 text-center mt-2">
-                Login with phone number and OTP
-              </p>
-            </div>
-
-            {/* Other Login Options */}
-            <div className="w-full border-t border-gray-200 pt-3">
-              <p className="text-xs text-gray-500 text-center mb-2">Other login options:</p>
-              <Link
-                href={ROUTES.VENDOR_LOGIN}
-                className="text-xs text-center text-gray-600 hover:text-primary transition-colors block"
-              >
-                Vendor Login →
-              </Link>
-            </div>
-          </>
-        ) : (
-          <>
-            <button
-              type="button"
-              onClick={() => {
-                setShowDeliveryPartnerLogin(false);
-                setDeliveryPartnerPhone("");
-                setDeliveryPartnerOTP("");
-              }}
-              className="text-sm text-gray-600 hover:text-primary transition-colors"
-            >
-              ← Back to regular login
-            </button>
-          </>
-        )}
-      </CardFooter>
-    </Card>
+            </CardContent>
+          )}
+        </Card>
+      </div>
+    </div>
   );
 }
 

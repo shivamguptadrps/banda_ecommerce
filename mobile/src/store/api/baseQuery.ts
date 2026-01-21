@@ -6,8 +6,21 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolk
 /**
  * Base query with authentication headers
  */
+// Clean API URL to remove trailing slash
+const cleanApiUrl = (url: string): string => {
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+};
+
 export const baseQuery = fetchBaseQuery({
-  baseUrl: API_URL,
+  baseUrl: cleanApiUrl(API_URL),
+  // Follow redirects (307, 308) automatically
+  fetchFn: async (url, options) => {
+    const response = await fetch(url, {
+      ...options,
+      redirect: 'follow', // Follow redirects automatically
+    });
+    return response;
+  },
   prepareHeaders: async (headers) => {
     // Add auth token if available
     const token = await storage.getAccessToken();
@@ -18,6 +31,48 @@ export const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
+
+// Enhanced logging wrapper for debugging - ALWAYS ENABLED
+export const baseQueryWithLogging: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const url = typeof args === 'string' ? args : args.url || '';
+  const fullUrl = `${cleanApiUrl(API_URL)}${url}`;
+  
+  // Always log - even in production
+  console.log('🌐 API Request:', {
+    method: typeof args === 'string' ? 'GET' : (args.method || 'GET'),
+    url: fullUrl,
+    baseUrl: cleanApiUrl(API_URL),
+    endpoint: url,
+  });
+  
+  const startTime = Date.now();
+  // Use baseQueryWithReauth to handle token refresh
+  const result = await baseQueryWithReauth(args, api, extraOptions);
+  const duration = Date.now() - startTime;
+  
+  if (result.error) {
+    console.error('❌ API Error:', {
+      url: fullUrl,
+      status: result.error.status,
+      data: result.error.data,
+      duration: `${duration}ms`,
+      errorType: result.error.status === 'FETCH_ERROR' ? 'NETWORK_ERROR' : 'HTTP_ERROR',
+    });
+  } else {
+    console.log('✅ API Success:', {
+      url: fullUrl,
+      duration: `${duration}ms`,
+      dataSize: result.data ? JSON.stringify(result.data).length : 0,
+      hasData: !!result.data,
+    });
+  }
+  
+  return result;
+};
 
 /**
  * Base query with re-authentication on 401
