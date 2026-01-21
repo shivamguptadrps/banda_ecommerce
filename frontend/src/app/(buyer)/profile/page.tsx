@@ -62,7 +62,7 @@ export default function ProfilePage() {
     if (user) {
       reset({
         name: user.name,
-        phone: user.phone,
+        phone: user.phone || "",
       });
     }
   }, [user, reset]);

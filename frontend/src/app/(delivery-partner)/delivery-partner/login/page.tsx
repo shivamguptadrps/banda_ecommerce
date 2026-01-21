@@ -59,6 +59,8 @@ export default function DeliveryPartnerLoginPage() {
             phone: result.delivery_partner.phone,
             role: "delivery_partner",
             is_active: result.delivery_partner.is_active,
+            is_email_verified: false,
+            is_mobile_verified: true,
             created_at: new Date().toISOString(),
           },
           access_token: result.access_token,

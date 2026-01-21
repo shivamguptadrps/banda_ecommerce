@@ -189,7 +189,7 @@ export function ActiveOrderWidget() {
                       <p className="text-xs text-gray-500">#{order.order_number}</p>
                     </div>
                     <p className="text-lg font-bold text-gray-900">
-                      ₹{parseFloat(order.total_amount).toFixed(0)}
+                      ₹{typeof order.total_amount === 'string' ? parseFloat(order.total_amount).toFixed(0) : order.total_amount.toFixed(0)}
                     </p>
                   </div>
 

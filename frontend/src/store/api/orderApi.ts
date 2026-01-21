@@ -49,6 +49,7 @@ export interface Order {
   delivery_address_snapshot?: string;
   delivery_distance_km?: number;
   delivery_otp?: string; // 6-digit OTP for delivery confirmation
+  estimated_delivery_minutes?: number; // Estimated delivery time in minutes
   notes?: string;
   cancellation_reason?: string;
   placed_at: string;
