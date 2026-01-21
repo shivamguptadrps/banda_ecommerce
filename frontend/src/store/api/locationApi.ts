@@ -47,6 +47,7 @@ export interface ReverseGeocodeResponse {
     road: string;
     neighbourhood: string;
     city: string;
+    town?: string;
     state: string;
     postcode: string;
     country: string;

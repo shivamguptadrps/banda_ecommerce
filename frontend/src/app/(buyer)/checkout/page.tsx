@@ -784,8 +784,8 @@ export default function CheckoutPage() {
 
     try {
       const result = await checkServiceability({
-        latitude: parseFloat(address.latitude as string),
-        longitude: parseFloat(address.longitude as string),
+        latitude: address.latitude!,
+        longitude: address.longitude!,
       }).unwrap();
 
       if (!result.serviceable) {
